@@ -803,7 +803,7 @@ function showMsg(id,text,type) {
   el.textContent=text; el.className='auth-msg '+type;
 }
 
-function loadApp(user) {
+async function loadApp(user) {
   currentUser=user;
   document.getElementById('auth-screen').style.display='none';
   document.getElementById('app-screen').style.display='block';
@@ -812,6 +812,54 @@ function loadApp(user) {
   document.getElementById('welcome-name').textContent=firstName+'.';
   document.getElementById('user-email-display').textContent=user.email||'Demo user';
   document.getElementById('user-avatar').textContent=(firstName.slice(0,2)).toUpperCase();
+  await loadUserPlan(user);
+}
+
+async function loadUserPlan(user) {
+  if(!user.id || user.id==='demo') { applyPlan('essential'); return; }
+  try {
+    const { data, error } = await sb.from('profiles').select('plan,subscription_status').eq('id', user.id).single();
+    if(error || !data) { applyPlan('free'); return; }
+    const plan = data.subscription_status === 'active' ? (data.plan||'free') : 'free';
+    applyPlan(plan);
+  } catch(e) { applyPlan('free'); }
+}
+
+function applyPlan(plan) {
+  const tierBadge = document.getElementById('tier-badge');
+  const userPlanDisplay = document.getElementById('user-plan-display');
+  const upgradeChip = document.querySelector('.upgrade-chip');
+
+  if(plan === 'professional') {
+    tierBadge.textContent = 'Professional';
+    tierBadge.className = 'tier-badge tier-professional';
+    userPlanDisplay.textContent = 'Professional plan';
+    if(upgradeChip) upgradeChip.style.display = 'none';
+    ['nav-policy','nav-contract','nav-ir'].forEach(id => {
+      const el = document.getElementById(id);
+      if(el) { el.classList.remove('locked'); el.onclick = null; }
+    });
+    document.getElementById('nav-policy').onclick = () => showPanel('policy', document.getElementById('nav-policy'));
+    document.getElementById('nav-contract').onclick = () => showPanel('contract-build', document.getElementById('nav-contract'));
+    document.getElementById('nav-ir').onclick = () => showPanel('ir', document.getElementById('nav-ir'));
+    document.querySelectorAll('.tool-card.locked').forEach(c => {
+      c.classList.remove('locked');
+      c.querySelector('.tool-badge').textContent = 'Professional';
+      c.querySelector('.tool-badge').className = 'tool-badge badge-pro';
+    });
+  } else if(plan === 'essential') {
+    tierBadge.textContent = 'Essential';
+    tierBadge.className = 'tier-badge tier-essential';
+    userPlanDisplay.textContent = 'Essential plan';
+  } else {
+    tierBadge.textContent = 'Free';
+    tierBadge.className = 'tier-badge tier-free';
+    userPlanDisplay.textContent = 'Free plan';
+    ['termination','onboarding','performance','contract-check'].forEach(id => {
+      const navItem = document.querySelector(`.nav-item[onclick*="${id}"]`);
+      if(navItem) navItem.classList.add('locked');
+    });
+  }
 }
 
 sb.auth.onAuthStateChange((event,session)=>{
