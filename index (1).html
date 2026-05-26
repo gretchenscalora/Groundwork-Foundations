@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Groundwork Foundations | HR Platform</title>
+<meta name="description" content="Groundwork Foundations — practical HR tools for regional and agricultural businesses across Australia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --clay: #C4835A; --clay-light: #E8C4A8; --clay-deep: #8B5E3C;
+  --earth: #3D2E1E; --earth-mid: #5C4A35;
+  --sage: #7A8C6E; --sage-light: #B5C4A8;
+  --cream: #F5F0E8; --cream-dark: #E8E0D0; --warm-white: #FDFAF5;
+  --text-primary: #2A1F14; --text-secondary: #5C4A35; --text-muted: #8B7355;
+  --border: rgba(196,131,90,0.18);
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --sidebar-w: 240px;
+}
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--cream); color: var(--text-primary); min-height: 100vh; }
+
+/* AUTH SCREEN */
+#auth-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: var(--earth);
+  position: relative; overflow: hidden;
+}
+#auth-screen::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(196,131,90,0.12) 0%, transparent 70%);
+}
+.auth-card {
+  background: var(--warm-white); border-radius: 6px; padding: 3rem;
+  width: 100%; max-width: 420px; position: relative; z-index: 1;
+}
+.auth-logo { font-family: var(--font-display); font-size: 1.4rem; font-weight: 600; color: var(--earth); margin-bottom: 0.2rem; }
+.auth-logo-sub { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--clay); margin-bottom: 2rem; }
+.auth-heading { font-family: var(--font-display); font-size: 1.8rem; font-weight: 300; color: var(--earth); margin-bottom: 0.4rem; }
+.auth-heading em { font-style: italic; color: var(--clay); }
+.auth-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.75rem; line-height: 1.6; }
+.auth-tabs { display: flex; gap: 0; margin-bottom: 1.5rem; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+.auth-tab { flex: 1; padding: 0.6rem; font-size: 0.78rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; background: transparent; border: none; color: var(--text-muted); font-family: var(--font-body); transition: all 0.2s; }
+.auth-tab.active { background: var(--clay); color: var(--warm-white); }
+.form-group { margin-bottom: 1rem; }
+.form-label { display: block; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500; }
+.form-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 3px; font-family: var(--font-body); font-size: 0.9rem; color: var(--text-primary); background: var(--warm-white); outline: none; transition: border-color 0.2s; }
+.form-input:focus { border-color: var(--clay); }
+.form-input::placeholder { color: rgba(139,115,85,0.45); }
+.auth-btn { width: 100%; padding: 0.85rem; background: var(--clay); color: var(--warm-white); border: none; border-radius: 3px; font-family: var(--font-body); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; margin-top: 0.5rem; }
+.auth-btn:hover { background: var(--clay-deep); }
+.auth-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.auth-msg { font-size: 0.8rem; margin-top: 0.75rem; padding: 0.6rem 0.8rem; border-radius: 3px; text-align: center; display: none; }
+.auth-msg.error { background: rgba(162,45,45,0.08); color: #A32D2D; display: block; }
+.auth-msg.success { background: rgba(59,109,17,0.08); color: #3B6D11; display: block; }
+.auth-divider { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin: 1rem 0; }
+
+/* APP SHELL */
+#app-screen { display: none; min-height: 100vh; }
+.app-layout { display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+.sidebar { width: var(--sidebar-w); background: var(--earth); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 50; transition: transform 0.3s; }
+.sidebar-logo { padding: 1.5rem 1.25rem 1rem; border-bottom: 1px solid rgba(245,240,232,0.08); }
+.sidebar-logo-main { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--warm-white); }
+.sidebar-logo-sub { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(232,196,168,0.5); margin-top: 2px; }
+.sidebar-tier { margin: 0.75rem 1.25rem 0.25rem; }
+.tier-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+.tier-free { background: rgba(245,240,232,0.1); color: rgba(232,196,168,0.6); }
+.tier-essential { background: rgba(196,131,90,0.2); color: var(--clay-light); }
+.tier-professional { background: rgba(122,140,110,0.25); color: var(--sage-light); }
+.sidebar-nav { flex: 1; padding: 0.5rem 0; overflow-y: auto; }
+.nav-section { padding: 0.75rem 1.25rem 0.3rem; font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(232,196,168,0.3); font-weight: 500; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 1.25rem; font-size: 0.82rem; color: rgba(245,240,232,0.6); cursor: pointer; border-left: 2px solid transparent; transition: all 0.15s; }
+.nav-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.7; }
+.nav-item:hover { background: rgba(245,240,232,0.05); color: rgba(245,240,232,0.9); }
+.nav-item.active { background: rgba(196,131,90,0.12); color: var(--clay-light); border-left-color: var(--clay); }
+.nav-item.active svg { opacity: 1; }
+.nav-item.locked { opacity: 0.3; cursor: not-allowed; }
+.nav-item.locked:hover { background: transparent; color: rgba(245,240,232,0.3); }
+.sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid rgba(245,240,232,0.08); }
+.user-row { display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(196,131,90,0.25); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 500; color: var(--clay-light); flex-shrink: 0; }
+.user-email { font-size: 0.72rem; color: rgba(245,240,232,0.55); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.user-plan { font-size: 0.62rem; color: rgba(232,196,168,0.35); margin-top: 1px; }
+.signout-btn { margin-top: 0.5rem; width: 100%; padding: 0.45rem; border: 1px solid rgba(245,240,232,0.1); background: transparent; color: rgba(245,240,232,0.4); font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.2s; }
+.signout-btn:hover { border-color: rgba(245,240,232,0.25); color: rgba(245,240,232,0.65); }
+
+/* MAIN CONTENT */
+.main-content { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+.topbar { padding: 1rem 2rem; background: var(--warm-white); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 40; }
+.topbar-title { font-family: var(--font-display); font-size: 1.3rem; font-weight: 300; color: var(--earth); }
+.topbar-title em { font-style: italic; color: var(--clay); }
+.upgrade-chip { padding: 5px 14px; background: rgba(196,131,90,0.08); border: 1px solid rgba(196,131,90,0.25); border-radius: 20px; font-size: 0.7rem; font-weight: 500; color: var(--clay-deep); cursor: pointer; letter-spacing: 0.05em; transition: all 0.2s; }
+.upgrade-chip:hover { background: rgba(196,131,90,0.15); }
+.content-area { padding: 2rem; flex: 1; }
+
+/* PANELS */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* DASHBOARD */
+.welcome-line { font-family: var(--font-display); font-size: 2rem; font-weight: 300; color: var(--earth); margin-bottom: 0.3rem; }
+.welcome-line em { font-style: italic; color: var(--clay); }
+.welcome-sub { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.6; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
+.stat-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 4px; padding: 1.1rem 1.25rem; }
+.stat-val { font-family: var(--font-display); font-size: 2rem; font-weight: 600; color: var(--clay); line-height: 1; }
+.stat-lbl { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 0.04em; }
+.section-title { font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; font-weight: 500; display: flex; align-items: center; gap: 0.75rem; }
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.tool-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 2rem; }
+.tool-card { background: var(--warm-white); border: 1px solid var(--border); border-radius: 4px; padding: 1.25rem; cursor: pointer; transition: border-color 0.2s, transform 0.15s; }
+.tool-card:hover { border-color: var(--clay); transform: translateY(-1px); }
+.tool-card.locked { opacity: 0.5; cursor: not-allowed; }
+.tool-card.locked:hover { border-color: var(--border); transform: none; }
+.tool-icon { width: 36px; height: 36px; border-radius: 4px; background: rgba(196,131,90,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 0.85rem; }
+.tool-icon svg { width: 18px; height: 18px; color: var(--clay); }
+.tool-icon.sage-icon { background: rgba(122,140,110,0.12); }
+.tool-icon.sage-icon svg { color: var(--sage); }
+.tool-name { font-size: 0.88rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.3rem; }
+.tool-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; }
+.tool-badge { display: inline-block; margin-top: 0.6rem; font-size: 0.62rem; padding: 2px 8px; border-radius: 20px; font-weight: 500; letter-spacing: 0.05em; }
+.badge-essential { background: rgba(196,131,90,0.1); color: var(--clay-deep); }
+.badge-pro { background: rgba(122,140,110,0.12); color: #3B6D11; }
+.badge-lock { background: rgba(139,115,85,0.08); color: var(--text-muted); }
+.recent-list { display: flex; flex-direction: column; gap: 8px; }
+.recent-row { display: flex; align-items: center; gap: 12px; padding: 0.85rem 1rem; background: var(--warm-white); border: 1px solid var(--border); border-radius: 4px; }
+.recent-icon { color: var(--clay); flex-shrink: 0; }
+.recent-icon svg { width: 16px; height: 16px; }
+.recent-label { flex: 1; font-size: 0.82rem; color: var(--text-primary); }
+.recent-date { font-size: 0.72rem; color: var(--text-muted); }
+.risk-chip { font-size: 0.62rem; padding: 2px 8px; border-radius: 20px; font-weight: 500; }
+.chip-low { background: rgba(59,109,17,0.1); color: #3B6D11; }
+.chip-med { background: rgba(133,79,11,0.1); color: #854F0B; }
+.chip-high { background: rgba(162,45,45,0.1); color: #A32D2D; }
+
+/* TOOL PANELS */
+.tool-header { margin-bottom: 1.75rem; }
+.tool-title { font-family: var(--font-display); font-size: 1.8rem; font-weight: 300; color: var(--earth); margin-bottom: 0.4rem; line-height: 1.15; }
+.tool-title em { font-style: italic; color: var(--clay); }
+.tool-subtitle { font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; max-width: 560px; }
+.form-row { margin-bottom: 1.1rem; }
+.form-lbl { display: block; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500; }
+.form-select, .form-text-input { width: 100%; padding: 0.7rem 0.9rem; border: 1px solid var(--border); border-radius: 3px; font-family: var(--font-body); font-size: 0.88rem; color: var(--text-primary); background: var(--warm-white); outline: none; transition: border-color 0.2s; }
+.form-select:focus, .form-text-input:focus { border-color: var(--clay); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.radio-group { display: flex; flex-direction: column; gap: 7px; }
+.radio-opt { display: flex; align-items: flex-start; gap: 10px; padding: 0.7rem 0.9rem; border: 1px solid var(--border); border-radius: 3px; cursor: pointer; transition: border-color 0.15s; background: var(--warm-white); }
+.radio-opt:hover { border-color: rgba(196,131,90,0.4); }
+.radio-opt.sel { border-color: var(--clay); background: rgba(196,131,90,0.04); }
+.radio-opt input { margin-top: 3px; accent-color: var(--clay); flex-shrink: 0; }
+.radio-text { font-size: 0.85rem; color: var(--text-primary); line-height: 1.45; }
+.radio-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+.check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.check-opt { display: flex; align-items: flex-start; gap: 9px; padding: 0.65rem 0.9rem; border: 1px solid var(--border); border-radius: 3px; cursor: pointer; transition: border-color 0.15s; background: var(--warm-white); }
+.check-opt:hover { border-color: rgba(196,131,90,0.4); }
+.check-opt.sel { border-color: var(--clay); background: rgba(196,131,90,0.04); }
+.check-opt input { margin-top: 3px; accent-color: var(--clay); flex-shrink: 0; }
+.check-text { font-size: 0.82rem; color: var(--text-primary); }
+.btn-row { display: flex; gap: 10px; margin-top: 1.25rem; }
+.btn-primary { padding: 0.75rem 2rem; background: var(--clay); color: var(--warm-white); border: none; border-radius: 3px; font-family: var(--font-body); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+.btn-primary:hover { background: var(--clay-deep); }
+.btn-secondary { padding: 0.75rem 1.5rem; background: transparent; color: var(--clay); border: 1px solid rgba(196,131,90,0.35); border-radius: 3px; font-family: var(--font-body); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.btn-secondary:hover { background: rgba(196,131,90,0.06); }
+
+/* RESULTS */
+.result-card { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-top: 1.5rem; background: var(--warm-white); }
+.result-header { padding: 0.85rem 1.25rem; background: var(--cream); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.result-title { font-size: 0.82rem; font-weight: 500; color: var(--text-primary); letter-spacing: 0.04em; }
+.result-body { padding: 1.25rem; }
+.risk-bar-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+.risk-bar-bg { flex: 1; height: 5px; background: var(--cream); border-radius: 3px; }
+.risk-bar-fill { height: 5px; border-radius: 3px; transition: width 0.6s ease; }
+.risk-text { font-size: 0.78rem; font-weight: 500; min-width: 70px; text-align: right; }
+.finding { display: flex; align-items: flex-start; gap: 10px; padding: 0.75rem 0; border-bottom: 1px solid var(--border); }
+.finding:last-child { border-bottom: none; }
+.finding-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+.finding-label { font-size: 0.85rem; font-weight: 500; color: var(--text-primary); margin-bottom: 2px; }
+.finding-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; }
+.step-item { display: flex; align-items: flex-start; gap: 12px; padding: 0.85rem 0; border-bottom: 1px solid var(--border); }
+.step-item:last-child { border-bottom: none; }
+.step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--clay); color: var(--warm-white); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 500; flex-shrink: 0; }
+.step-num.urgent { background: #A32D2D; }
+.step-label { font-size: 0.88rem; font-weight: 500; color: var(--text-primary); margin-bottom: 3px; }
+.step-desc { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; }
+.cta-nudge { margin-top: 1rem; padding: 0.85rem 1rem; border-radius: 3px; background: rgba(196,131,90,0.06); border: 1px solid rgba(196,131,90,0.18); font-size: 0.78rem; color: var(--clay-deep); line-height: 1.6; }
+
+/* AI OUTPUT */
+.ai-card { border: 1px solid rgba(196,131,90,0.25); border-radius: 4px; overflow: hidden; margin-top: 1.5rem; }
+.ai-card-header { padding: 0.75rem 1.25rem; background: rgba(196,131,90,0.06); border-bottom: 1px solid rgba(196,131,90,0.18); display: flex; align-items: center; justify-content: space-between; }
+.ai-label { font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--clay-deep); font-weight: 500; }
+.ai-body { padding: 1.25rem; font-size: 0.88rem; color: var(--text-primary); line-height: 1.75; max-height: 360px; overflow-y: auto; white-space: pre-wrap; }
+.ai-footer { padding: 0.75rem 1.25rem; border-top: 1px solid var(--border); background: var(--cream); display: flex; align-items: center; gap: 10px; }
+.ai-disclaimer { font-size: 0.72rem; color: var(--text-muted); flex: 1; line-height: 1.5; }
+.loading-dots { display: inline-flex; gap: 4px; }
+.loading-dots span { width: 6px; height: 6px; border-radius: 50%; background: var(--clay); animation: dotPulse 1.2s ease infinite; }
+.loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dotPulse { 0%, 80%, 100% { opacity: 0.2; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
+
+/* PLANS */
+.plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.plan-card { border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; background: var(--warm-white); }
+.plan-card.featured { border-color: var(--clay); border-width: 2px; }
+.plan-popular { display: inline-block; font-size: 0.62rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; background: rgba(196,131,90,0.1); color: var(--clay-deep); margin-bottom: 0.75rem; }
+.plan-name { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 500; }
+.plan-price { font-family: var(--font-display); font-size: 2.5rem; font-weight: 600; color: var(--earth); line-height: 1; margin-bottom: 0.25rem; }
+.plan-price span { font-size: 0.9rem; font-weight: 300; color: var(--text-muted); font-family: var(--font-body); }
+.plan-tagline { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5; }
+.plan-features { list-style: none; display: flex; flex-direction: column; gap: 7px; margin-bottom: 1.25rem; }
+.plan-features li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; color: var(--text-primary); line-height: 1.4; }
+.plan-features li svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; }
+.plan-features li.off { color: var(--text-muted); }
+.plan-features li.off svg { color: var(--text-muted); opacity: 0.4; }
+.plan-btn { width: 100%; padding: 0.7rem; border-radius: 3px; font-family: var(--font-body); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.plan-btn-primary { background: var(--clay); color: var(--warm-white); border: none; }
+.plan-btn-primary:hover { background: var(--clay-deep); }
+.plan-btn-dark { background: var(--earth); color: var(--warm-white); border: none; }
+.plan-btn-dark:hover { background: var(--earth-mid); }
+.plan-btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border); cursor: default; }
+
+/* UPGRADE LOCK */
+.upgrade-lock { text-align: center; padding: 3rem 2rem; border: 1px dashed rgba(196,131,90,0.3); border-radius: 4px; background: rgba(196,131,90,0.03); }
+.upgrade-lock-icon { width: 48px; height: 48px; border-radius: 50%; background: rgba(196,131,90,0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; }
+.upgrade-lock-icon svg { width: 22px; height: 22px; color: var(--clay); }
+.upgrade-lock h3 { font-family: var(--font-display); font-size: 1.4rem; font-weight: 300; color: var(--earth); margin-bottom: 0.5rem; }
+.upgrade-lock p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+/* MOBILE */
+.mobile-bar { display: none; background: var(--earth); padding: 1rem 1.25rem; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 60; }
+.mobile-logo { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--warm-white); }
+.mobile-menu-btn { background: none; border: none; color: rgba(245,240,232,0.7); cursor: pointer; padding: 4px; }
+.mobile-menu-btn svg { width: 22px; height: 22px; }
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 45; }
+
+@media (max-width: 768px) {
+  .mobile-bar { display: flex; }
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  .main-content { margin-left: 0; }
+  .topbar { display: none; }
+  .content-area { padding: 1.25rem; }
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .tool-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .check-grid { grid-template-columns: 1fr; }
+  .plans-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Groundwork</div>
+    <div class="auth-logo-sub">Foundations</div>
+    <div class="auth-heading">Your HR toolkit,<br><em>ready when you are.</em></div>
+    <div class="auth-sub">Practical HR tools built for regional and agricultural businesses across Australia.</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign in</button>
+      <button class="auth-tab" onclick="switchTab('signup')">Create account</button>
+    </div>
+    <div id="login-form">
+      <div class="form-group">
+        <label class="form-label">Email address</label>
+        <input type="email" class="form-input" id="login-email" placeholder="you@yourbusiness.com.au">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="login-password" placeholder="Your password">
+      </div>
+      <button class="auth-btn" onclick="signIn()" id="login-btn">Sign in</button>
+      <div class="auth-msg" id="login-msg"></div>
+      <div class="auth-divider">or</div>
+      <button class="auth-btn" style="background:var(--earth)" onclick="signInDemo()">Try demo account</button>
+    </div>
+    <div id="signup-form" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Full name</label>
+        <input type="text" class="form-input" id="signup-name" placeholder="Your name">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email address</label>
+        <input type="email" class="form-input" id="signup-email" placeholder="you@yourbusiness.com.au">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="signup-password" placeholder="Choose a password (8+ characters)">
+      </div>
+      <button class="auth-btn" onclick="signUp()" id="signup-btn">Create account</button>
+      <div class="auth-msg" id="signup-msg"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP SCREEN -->
+<div id="app-screen">
+  <!-- Mobile bar -->
+  <div class="mobile-bar">
+    <div class="mobile-logo">Groundwork Foundations</div>
+    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleMobileMenu()"></div>
+
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-main">Groundwork</div>
+        <div class="sidebar-logo-sub">Foundations</div>
+      </div>
+      <div class="sidebar-tier">
+        <span class="tier-badge tier-essential" id="tier-badge">Essential</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">Overview</div>
+        <div class="nav-item active" onclick="showPanel('dashboard',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </div>
+        <div class="nav-section">Essential tools</div>
+        <div class="nav-item" onclick="showPanel('termination',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Termination risk
+        </div>
+        <div class="nav-item" onclick="showPanel('onboarding',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+          Onboarding checklist
+        </div>
+        <div class="nav-item" onclick="showPanel('performance',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Performance guide
+        </div>
+        <div class="nav-item" onclick="showPanel('contract-check',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg>
+          Contract checker
+        </div>
+        <div class="nav-section">Professional tools</div>
+        <div class="nav-item locked" id="nav-policy" onclick="showPanel('upgrade',null)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Policy generator
+        </div>
+        <div class="nav-item locked" id="nav-contract" onclick="showPanel('upgrade',null)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Contract builder
+        </div>
+        <div class="nav-item locked" id="nav-ir" onclick="showPanel('upgrade',null)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          IR case prep
+        </div>
+        <div class="nav-section">Account</div>
+        <div class="nav-item" onclick="showPanel('upgrade',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="17 11 21 7 17 3"/><line x1="21" y1="7" x2="9" y2="7"/><path d="M3 21v-4a4 4 0 0 1 4-4h14"/></svg>
+          Plans & pricing
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-row">
+          <div class="user-avatar" id="user-avatar">--</div>
+          <div>
+            <div class="user-email" id="user-email-display">Loading...</div>
+            <div class="user-plan" id="user-plan-display">Essential plan</div>
+          </div>
+        </div>
+        <button class="signout-btn" onclick="signOut()">Sign out</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+      <div class="topbar">
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="upgrade-chip" onclick="showPanel('upgrade',null)">Upgrade to Professional</div>
+      </div>
+      <div class="content-area">
+
+        <!-- DASHBOARD -->
+        <div class="panel active" id="panel-dashboard">
+          <div class="welcome-line">Good day, <em id="welcome-name">there.</em></div>
+          <div class="welcome-sub">Your HR toolkit is ready. Pick up where you left off or start something new.</div>
+          <div class="stat-grid">
+            <div class="stat-card"><div class="stat-val" id="stat-tools">0</div><div class="stat-lbl">Tools used this month</div></div>
+            <div class="stat-card"><div class="stat-val" id="stat-saves">0</div><div class="stat-lbl">Documents saved</div></div>
+            <div class="stat-card"><div class="stat-val" style="font-size:1.4rem">Essential</div><div class="stat-lbl">Current plan</div></div>
+          </div>
+          <div class="section-title">Your tools</div>
+          <div class="tool-grid">
+            <div class="tool-card" onclick="showPanel('termination',null)">
+              <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+              <div class="tool-name">Termination risk calculator</div>
+              <div class="tool-desc">Assess your legal exposure before you act. Know what documentation you need.</div>
+              <span class="tool-badge badge-essential">Essential</span>
+            </div>
+            <div class="tool-card" onclick="showPanel('onboarding',null)">
+              <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg></div>
+              <div class="tool-name">Onboarding checklist builder</div>
+              <div class="tool-desc">Generate a custom checklist for any role, industry, or location.</div>
+              <span class="tool-badge badge-essential">Essential</span>
+            </div>
+            <div class="tool-card" onclick="showPanel('performance',null)">
+              <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+              <div class="tool-name">Performance management guide</div>
+              <div class="tool-desc">Step-by-step process for managing underperformance or conduct issues.</div>
+              <span class="tool-badge badge-essential">Essential</span>
+            </div>
+            <div class="tool-card" onclick="showPanel('contract-check',null)">
+              <div class="tool-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><polyline points="9 15 11 17 15 13"/></svg></div>
+              <div class="tool-name">Contract clause checker</div>
+              <div class="tool-desc">Flag missing or risky clauses under Australian employment law.</div>
+              <span class="tool-badge badge-essential">Essential</span>
+            </div>
+            <div class="tool-card locked" onclick="showPanel('upgrade',null)">
+              <div class="tool-icon sage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+              <div class="tool-name">HR policy generator</div>
+              <div class="tool-desc">AI-generated policy documents tailored to your business type.</div>
+              <span class="tool-badge badge-lock">Professional</span>
+            </div>
+            <div class="tool-card locked" onclick="showPanel('upgrade',null)">
+              <div class="tool-icon sage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+              <div class="tool-name">IR case prep assistant</div>
+              <div class="tool-desc">Prepare for Fair Work conciliation with confidence.</div>
+              <span class="tool-badge badge-lock">Professional</span>
+            </div>
+          </div>
+          <div class="section-title">Recent activity</div>
+          <div class="recent-list" id="recent-list">
+            <div style="font-size:0.82rem;color:var(--text-muted);padding:1rem 0;">No activity yet. Use a tool to get started.</div>
+          </div>
+        </div>
+
+        <!-- TERMINATION RISK -->
+        <div class="panel" id="panel-termination">
+          <div class="tool-header">
+            <div class="tool-title">Termination <em>risk calculator</em></div>
+            <div class="tool-subtitle">Assess your legal exposure before proceeding. This tool identifies what documentation you need and whether you should seek advice first.</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="form-lbl">Reason for termination</label>
+              <select class="form-select" id="term-reason">
+                <option value="">Select reason...</option>
+                <option>Serious misconduct</option>
+                <option>Repeated misconduct</option>
+                <option>Underperformance</option>
+                <option>Redundancy</option>
+                <option>End of fixed term contract</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Length of employment</label>
+              <select class="form-select" id="term-length">
+                <option value="">Select...</option>
+                <option>Under 6 months</option>
+                <option>6 months to 1 year</option>
+                <option>1 to 3 years</option>
+                <option>3 to 5 years</option>
+                <option>Over 5 years</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <label class="form-lbl">Written warnings on file</label>
+            <div class="radio-group">
+              <label class="radio-opt" onclick="sel(this,'warn')"><input type="radio" name="warn"><div class="radio-text">Yes, at least one formal written warning<div class="radio-sub">Documented, signed, and on file</div></div></label>
+              <label class="radio-opt" onclick="sel(this,'warn')"><input type="radio" name="warn"><div class="radio-text">Verbal warnings only<div class="radio-sub">Conversation happened but nothing in writing</div></div></label>
+              <label class="radio-opt" onclick="sel(this,'warn')"><input type="radio" name="warn"><div class="radio-text">No prior warnings<div class="radio-sub">First time this issue has been raised</div></div></label>
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:0.75rem">
+            <label class="form-lbl">Was the employee given opportunity to respond?</label>
+            <div class="radio-group">
+              <label class="radio-opt" onclick="sel(this,'respond')"><input type="radio" name="respond"><div class="radio-text">Yes — formal show cause process followed</div></label>
+              <label class="radio-opt" onclick="sel(this,'respond')"><input type="radio" name="respond"><div class="radio-text">Informal conversation only</div></label>
+              <label class="radio-opt" onclick="sel(this,'respond')"><input type="radio" name="respond"><div class="radio-text">No — not yet</div></label>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="calcTermination()">Calculate risk</button>
+            <button class="btn-secondary" onclick="resetForm('term')">Reset</button>
+          </div>
+          <div id="term-result" style="display:none">
+            <div class="result-card">
+              <div class="result-header">
+                <div class="result-title">Risk assessment</div>
+                <span id="term-badge" class="risk-chip">—</span>
+              </div>
+              <div class="result-body">
+                <div class="risk-bar-wrap">
+                  <div class="risk-bar-bg"><div class="risk-bar-fill" id="term-bar" style="width:0%"></div></div>
+                  <div class="risk-text" id="term-risk-text">—</div>
+                </div>
+                <div id="term-findings"></div>
+              </div>
+            </div>
+            <div class="cta-nudge">
+              <strong style="font-weight:500">Before you proceed —</strong> a 30-minute call with Groundwork Consulting could save significant cost and stress. Complex terminations carry real risk. Call <strong style="font-weight:500">0404 836 636</strong> or email <strong style="font-weight:500">hello@groundworkaustralia.com.au</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- ONBOARDING -->
+        <div class="panel" id="panel-onboarding">
+          <div class="tool-header">
+            <div class="tool-title">Onboarding <em>checklist builder</em></div>
+            <div class="tool-subtitle">Tell us about the role and we'll generate a custom onboarding checklist you can save or print.</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="form-lbl">Industry</label>
+              <select class="form-select" id="ob-industry">
+                <option value="">Select...</option>
+                <option>Farm or pastoral</option>
+                <option>Construction or trade</option>
+                <option>Community or health</option>
+                <option>Retail or hospitality</option>
+                <option>Transport or logistics</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Employment type</label>
+              <select class="form-select" id="ob-type">
+                <option value="">Select...</option>
+                <option>Full time permanent</option>
+                <option>Part time permanent</option>
+                <option>Casual</option>
+                <option>Seasonal</option>
+                <option>Fixed term contract</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Work location</label>
+              <select class="form-select" id="ob-location">
+                <option value="">Select...</option>
+                <option>On-site regional or rural</option>
+                <option>Remote — live-in</option>
+                <option>Remote — fly-in fly-out</option>
+                <option>Office based</option>
+                <option>Mixed or flexible</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Role level</label>
+              <select class="form-select" id="ob-level">
+                <option value="">Select...</option>
+                <option>Entry level or junior</option>
+                <option>Experienced operator</option>
+                <option>Supervisor or team leader</option>
+                <option>Manager or senior</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="buildChecklist()">Generate checklist</button>
+            <button class="btn-secondary" onclick="resetForm('ob')">Reset</button>
+          </div>
+          <div id="ob-result" style="display:none">
+            <div class="result-card">
+              <div class="result-header">
+                <div class="result-title" id="ob-title">Onboarding checklist</div>
+                <button class="btn-secondary" style="padding:4px 12px;font-size:0.72rem" onclick="printChecklist()">Print</button>
+              </div>
+              <div class="result-body" id="ob-items"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PERFORMANCE -->
+        <div class="panel" id="panel-performance">
+          <div class="tool-header">
+            <div class="tool-title">Performance <em>management guide</em></div>
+            <div class="tool-subtitle">Describe the situation and we'll give you the correct step-by-step process, including what documents you need and the right timeline.</div>
+          </div>
+          <div class="form-row">
+            <label class="form-lbl">What is the issue?</label>
+            <div class="radio-group">
+              <label class="radio-opt" onclick="sel(this,'perf-issue')"><input type="radio" name="perf-issue"><div class="radio-text">Underperformance — not meeting role requirements<div class="radio-sub">Work quality, productivity, skills gap</div></div></label>
+              <label class="radio-opt" onclick="sel(this,'perf-issue')"><input type="radio" name="perf-issue"><div class="radio-text">Misconduct — behaviour or attitude<div class="radio-sub">Attitude, insubordination, policy breaches, conflict with others</div></div></label>
+              <label class="radio-opt" onclick="sel(this,'perf-issue')"><input type="radio" name="perf-issue"><div class="radio-text">Serious misconduct — potential immediate dismissal<div class="radio-sub">Theft, violence, fraud, serious safety breach</div></div></label>
+              <label class="radio-opt" onclick="sel(this,'perf-issue')"><input type="radio" name="perf-issue"><div class="radio-text">Attendance or punctuality<div class="radio-sub">Persistent lateness, unexplained absences</div></div></label>
+            </div>
+          </div>
+          <div class="form-row" style="margin-top:0.75rem">
+            <label class="form-lbl">Where are you in the process?</label>
+            <select class="form-select" id="perf-stage">
+              <option value="">Select...</option>
+              <option>Just noticed — haven't spoken yet</option>
+              <option>Had an informal conversation</option>
+              <option>Issued first written warning</option>
+              <option>Issued second written warning</option>
+              <option>Considering termination</option>
+            </select>
+          </div>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="buildPerfGuide()">Get my guide</button>
+            <button class="btn-secondary" onclick="resetForm('perf')">Reset</button>
+          </div>
+          <div id="perf-result" style="display:none">
+            <div class="result-card">
+              <div class="result-header"><div class="result-title">Your next steps</div></div>
+              <div class="result-body" id="perf-steps"></div>
+            </div>
+            <div class="cta-nudge" style="margin-top:10px">Unsure about any of these steps? Groundwork Consulting can guide you through the process and make sure your documentation is watertight. Call <strong style="font-weight:500">0404 836 636</strong></div>
+          </div>
+        </div>
+
+        <!-- CONTRACT CHECK -->
+        <div class="panel" id="panel-contract-check">
+          <div class="tool-header">
+            <div class="tool-title">Contract <em>clause checker</em></div>
+            <div class="tool-subtitle">Select the clauses your current contracts include and we'll flag what's missing, risky, or non-compliant under Australian employment law.</div>
+          </div>
+          <div class="form-row">
+            <label class="form-lbl">Which clauses do your contracts currently include?</label>
+            <div class="check-grid" id="clause-checks">
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Position title and description</div></label>
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Base salary or hourly rate</div></label>
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Employment type (FT/PT/Casual)</div></label>
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Probationary period</div></label>
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Leave entitlements</div></label>
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Notice period — both parties</div></label>
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Confidentiality clause</div></label>
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Fair Work Information Statement</div></label>
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Award or agreement reference</div></label>
+              <label class="check-opt" onclick="toggleCheck(this)"><input type="checkbox"><div class="check-text">Superannuation details</div></label>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="checkClauses()">Check my contracts</button>
+            <button class="btn-secondary" onclick="resetForm('clause')">Reset</button>
+          </div>
+          <div id="clause-result" style="display:none">
+            <div class="result-card">
+              <div class="result-header">
+                <div class="result-title">Contract gap analysis</div>
+                <span id="clause-score" class="risk-chip">—</span>
+              </div>
+              <div class="result-body" id="clause-findings"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- POLICY GENERATOR (Pro) -->
+        <div class="panel" id="panel-policy">
+          <div class="tool-header">
+            <div class="tool-title">HR policy <em>generator</em></div>
+          </div>
+          <div class="upgrade-lock">
+            <div class="upgrade-lock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <h3>Professional plan required</h3>
+            <p>The AI policy generator creates custom HR policy documents tailored to your industry, business size, and applicable Modern Award. Upgrade to Professional to access this tool.</p>
+            <button class="btn-primary" onclick="showPanel('upgrade',null)">See Professional plan</button>
+          </div>
+        </div>
+
+        <!-- CONTRACT BUILDER (Pro) -->
+        <div class="panel" id="panel-contract-build">
+          <div class="tool-header">
+            <div class="tool-title">Employment contract <em>builder</em></div>
+          </div>
+          <div class="upgrade-lock">
+            <div class="upgrade-lock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <h3>Professional plan required</h3>
+            <p>The contract builder generates a compliant employment contract draft based on your role details. Upgrade to Professional to access this tool.</p>
+            <button class="btn-primary" onclick="showPanel('upgrade',null)">See Professional plan</button>
+          </div>
+        </div>
+
+        <!-- IR CASE PREP (Pro) -->
+        <div class="panel" id="panel-ir">
+          <div class="tool-header">
+            <div class="tool-title">IR case prep <em>assistant</em></div>
+          </div>
+          <div class="upgrade-lock">
+            <div class="upgrade-lock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <h3>Professional plan required</h3>
+            <p>The IR case prep assistant helps you prepare for Fair Work conciliation, outlining what to say, what documents to bring, and likely outcomes. Upgrade to Professional to access this tool.</p>
+            <button class="btn-primary" onclick="showPanel('upgrade',null)">See Professional plan</button>
+          </div>
+        </div>
+
+        <!-- UPGRADE / PLANS -->
+        <div class="panel" id="panel-upgrade">
+          <div class="tool-header">
+            <div class="tool-title">Plans &amp; <em>pricing</em></div>
+            <div class="tool-subtitle">All plans include access to the HR Health Check. Upgrade any time. Cancel any time. No lock-in contracts.</div>
+          </div>
+          <div class="plans-grid">
+            <div class="plan-card">
+              <div class="plan-name">Free</div>
+              <div class="plan-price">$0<span>/month</span></div>
+              <div class="plan-tagline">For businesses exploring their HR gaps</div>
+              <ul class="plan-features">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>HR Health Check quiz</li>
+                <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Essential tools</li>
+                <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>AI document tools</li>
+                <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Expert support</li>
+              </ul>
+              <button class="plan-btn plan-btn-ghost">Current plan</button>
+            </div>
+            <div class="plan-card featured">
+              <div class="plan-popular">Most popular</div>
+              <div class="plan-name">Essential</div>
+              <div class="plan-price">$69<span>/month</span></div>
+              <div class="plan-tagline">For businesses managing HR day to day</div>
+              <ul class="plan-features">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Everything in Free</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Termination risk calculator</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Onboarding checklist builder</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Performance management guide</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Contract clause checker</li>
+                <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>AI document generation</li>
+                <li class="off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>Priority support</li>
+              </ul>
+              <button class="plan-btn plan-btn-primary" onclick="alert('Stripe integration coming soon. Email hello@groundworkaustralia.com.au to subscribe.')">Upgrade to Essential</button>
+            </div>
+            <div class="plan-card">
+              <div class="plan-name">Professional</div>
+              <div class="plan-price">$179<span>/month</span></div>
+              <div class="plan-tagline">For businesses that want expert backup</div>
+              <ul class="plan-features">
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Everything in Essential</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>AI HR policy generator</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Employment contract builder</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>IR case prep assistant</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Priority email support</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Monthly HR law updates</li>
+                <li><svg viewBox="0 0 24 24" fill="none" stroke="#7A8C6E" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Discounted consulting rate</li>
+              </ul>
+              <button class="plan-btn plan-btn-dark" onclick="alert('Stripe integration coming soon. Email hello@groundworkaustralia.com.au to subscribe.')">Upgrade to Professional</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://tmevwjupswenhbdykazd.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtZXZ3anVwc3dlbmhiZHlrYXpkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk3NTc1MDIsImV4cCI6MjA5NTMzMzUwMn0.iGpmnyN3UN6ZiJWm26Jz85OZBnaOBwf8OsMmKBTX0UI';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let toolsUsed = 0;
+
+// AUTH
+function switchTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='signup')));
+  document.getElementById('login-form').style.display = tab==='login'?'block':'none';
+  document.getElementById('signup-form').style.display = tab==='signup'?'block':'none';
+}
+
+async function signIn() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  const btn = document.getElementById('login-btn');
+  const msg = document.getElementById('login-msg');
+  if(!email||!pass){showMsg('login-msg','Please enter your email and password.','error');return;}
+  btn.disabled=true; btn.textContent='Signing in...';
+  const {data,error} = await sb.auth.signInWithPassword({email,password:pass});
+  btn.disabled=false; btn.textContent='Sign in';
+  if(error){showMsg('login-msg',error.message,'error');}
+  else{loadApp(data.user);}
+}
+
+async function signUp() {
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const pass = document.getElementById('signup-password').value;
+  const btn = document.getElementById('signup-btn');
+  if(!name||!email||!pass){showMsg('signup-msg','Please fill in all fields.','error');return;}
+  if(pass.length<8){showMsg('signup-msg','Password must be at least 8 characters.','error');return;}
+  btn.disabled=true; btn.textContent='Creating account...';
+  const {data,error} = await sb.auth.signUp({email,password:pass,options:{data:{full_name:name}}});
+  btn.disabled=false; btn.textContent='Create account';
+  if(error){showMsg('signup-msg',error.message,'error');}
+  else{showMsg('signup-msg','Account created! Check your email to confirm, then sign in.','success');}
+}
+
+async function signInDemo() {
+  loadApp({email:'demo@groundworkaustralia.com.au',user_metadata:{full_name:'Demo User'},id:'demo'});
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  document.getElementById('app-screen').style.display='none';
+  document.getElementById('auth-screen').style.display='flex';
+  currentUser=null;
+}
+
+function showMsg(id,text,type) {
+  const el=document.getElementById(id);
+  el.textContent=text; el.className='auth-msg '+type;
+}
+
+function loadApp(user) {
+  currentUser=user;
+  document.getElementById('auth-screen').style.display='none';
+  document.getElementById('app-screen').style.display='block';
+  const name = user.user_metadata?.full_name||user.email||'there';
+  const firstName = name.split(' ')[0];
+  document.getElementById('welcome-name').textContent=firstName+'.';
+  document.getElementById('user-email-display').textContent=user.email||'Demo user';
+  document.getElementById('user-avatar').textContent=(firstName.slice(0,2)).toUpperCase();
+}
+
+sb.auth.onAuthStateChange((event,session)=>{
+  if(session?.user&&event==='SIGNED_IN') loadApp(session.user);
+});
+sb.auth.getSession().then(({data:{session}})=>{
+  if(session?.user) loadApp(session.user);
+});
+
+// NAV
+function showPanel(id,navEl) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  const panel=document.getElementById('panel-'+id);
+  if(panel) panel.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(navEl&&!navEl.classList.contains('locked')) navEl.classList.add('active');
+  const titles={dashboard:'Dashboard',termination:'Termination risk calculator',onboarding:'Onboarding checklist builder',performance:'Performance management guide','contract-check':'Contract clause checker',policy:'Policy generator','contract-build':'Contract builder',ir:'IR case prep',upgrade:'Plans & pricing'};
+  document.getElementById('topbar-title').textContent=titles[id]||id;
+  if(id!=='dashboard') { toolsUsed++; document.getElementById('stat-tools').textContent=toolsUsed; }
+  if(window.innerWidth<768) toggleMobileMenu();
+}
+
+function toggleMobileMenu() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+
+// TOOL HELPERS
+function sel(el,name) {
+  document.querySelectorAll('.radio-opt input[name="'+name+'"]').forEach(r=>r.closest('.radio-opt').classList.remove('sel'));
+  el.classList.add('sel');
+  el.querySelector('input').checked=true;
+}
+function toggleCheck(el){ el.classList.toggle('sel'); el.querySelector('input').checked=el.classList.contains('sel'); }
+function resetForm(prefix) {
+  document.querySelectorAll('#panel-'+prefix+' select').forEach(s=>s.value='');
+  document.querySelectorAll('#panel-'+prefix+' .radio-opt, #panel-'+prefix+' .check-opt').forEach(r=>{ r.classList.remove('sel'); r.querySelector('input').checked=false; });
+  const res=document.getElementById(prefix+'-result')||document.getElementById(prefix+'-result')||document.getElementById('ob-result')||document.getElementById('clause-result')||document.getElementById('perf-result');
+  if(res) res.style.display='none';
+}
+
+// TERMINATION
+function calcTermination() {
+  const reason=document.getElementById('term-reason').value;
+  const length=document.getElementById('term-length').value;
+  const warn=document.querySelector('.radio-opt input[name="warn"]:checked');
+  const respond=document.querySelector('.radio-opt input[name="respond"]:checked');
+  if(!reason||!length||!warn||!respond){alert('Please complete all fields before calculating.');return;}
+  const warnText=warn.closest('.radio-opt').querySelector('.radio-text').textContent;
+  const respondText=respond.closest('.radio-opt').querySelector('.radio-text').textContent;
+  let risk=0;
+  const riskMap={'Serious misconduct':5,'Repeated misconduct':15,'Underperformance':35,'Redundancy':10,'End of fixed term contract':5};
+  risk+=riskMap[reason]||15;
+  const lengthMap={'Under 6 months':0,'6 months to 1 year':8,'1 to 3 years':15,'3 to 5 years':25,'Over 5 years':35};
+  risk+=lengthMap[length]||0;
+  if(warnText.includes('Verbal'))risk+=20; else if(warnText.includes('No prior'))risk+=30;
+  if(respondText.includes('Informal'))risk+=15; else if(respondText.includes('No'))risk+=30;
+  risk=Math.min(risk,100);
+  const bar=document.getElementById('term-bar');
+  const rtxt=document.getElementById('term-risk-text');
+  const badge=document.getElementById('term-badge');
+  bar.style.width=risk+'%';
+  let col,label,cls;
+  if(risk<35){col='#3B6D11';label='Low risk';cls='chip-low';}
+  else if(risk<65){col='#854F0B';label='Medium risk';cls='chip-med';}
+  else{col='#A32D2D';label='High risk';cls='chip-high';}
+  bar.style.background=col; rtxt.textContent=label; rtxt.style.color=col;
+  badge.textContent=label; badge.className='risk-chip '+cls;
+  const findings=[];
+  if(!warnText.includes('formal'))findings.push({col:'#A32D2D',title:'No formal written warning on file',desc:'A signed written warning is essential before dismissal for most conduct or performance issues. Verbal warnings do not provide sufficient protection.'});
+  if(respondText.includes('No'))findings.push({col:'#A32D2D',title:'Employee has not been given opportunity to respond',desc:'This is a critical Fair Work requirement. Failure to provide a genuine opportunity to respond significantly increases unfair dismissal exposure.'});
+  if(length.includes('5 years')||length.includes('3 to'))findings.push({col:'#854F0B',title:'Long service increases exposure',desc:'Employees with longer service have stronger unfair dismissal claims. Ensure your process is thorough, documented, and defensible.'});
+  if(reason==='Redundancy')findings.push({col:'#854F0B',title:'Genuine redundancy checklist required',desc:'Must meet consultation obligations, consider redeployment, and comply with Award or Enterprise Agreement requirements for redundancy.'});
+  findings.push({col:'#3B6D11',title:'Document everything in writing',desc:'Keep records of all conversations, warnings, responses, and decisions. Date and sign every document and store securely.'});
+  document.getElementById('term-findings').innerHTML=findings.map(f=>`<div class="finding"><div class="finding-dot" style="background:${f.col}"></div><div><div class="finding-label">${f.title}</div><div class="finding-desc">${f.desc}</div></div></div>`).join('');
+  document.getElementById('term-result').style.display='block';
+  addRecentActivity('Termination risk assessment — '+reason, label.toLowerCase().replace(' ','').includes('low')?'chip-low':label.toLowerCase().includes('high')?'chip-high':'chip-med', label);
+}
+
+// ONBOARDING
+function buildChecklist() {
+  const ind=document.getElementById('ob-industry').value;
+  const type=document.getElementById('ob-type').value;
+  const loc=document.getElementById('ob-location').value;
+  const level=document.getElementById('ob-level').value;
+  if(!ind||!type||!loc||!level){alert('Please complete all fields.');return;}
+  const base=['Signed employment contract received and on file','Tax file number declaration completed','Superannuation choice form completed and lodged','Fair Work Information Statement provided','Casual Employment Information Statement provided (if casual)','Bank account details collected for payroll','Emergency contact details collected','Photo ID sighted and copied for file','Right to work in Australia confirmed'];
+  const remote=loc.includes('Remote')||loc.includes('remote')?['Accommodation and facilities orientation completed','Remote area allowances and conditions explained and documented','Communication protocols confirmed — check-in schedule and emergency contacts','Isolation support resources and Employee Assistance Program explained','FIFO or roster arrangements confirmed in writing']:[];
+  const farm=ind.includes('Farm')||ind.includes('pastoral')?['PPE issued and correct fit confirmed','Relevant chemical handling training completed, SDS location explained','Plant and machinery induction completed and signed','Livestock handling protocols and safety procedures explained','Property boundary and emergency muster point walkthrough completed','Fire safety and emergency evacuation plan explained']:[];
+  const construction=ind.includes('Construction')?['Site-specific induction completed and signed','PPE issued, inspected, and recorded','White card and relevant trade licences sighted and verified','SWMS reviewed for all relevant tasks','Safety incident and near-miss reporting procedure explained','Site supervisor and safety officer introduced']:[];
+  const health=ind.includes('health')||ind.includes('Community')?['Working with Children Check verified and current','National police clearance sighted and on file','Professional registration or qualifications verified','Mandatory reporting obligations explained and acknowledged','Privacy and confidentiality obligations reviewed']:[];
+  const manager=level.includes('Manager')||level.includes('Supervisor')?['Management responsibilities and delegation authority confirmed','Performance review process for their team explained','HR policies and issue escalation process reviewed','Access to Groundwork Foundations platform confirmed','Probationary review process and timeline explained']:[];
+  const allItems=[...base,...remote,...farm,...construction,...health,...manager];
+  document.getElementById('ob-title').textContent='Onboarding checklist — '+ind+', '+type;
+  document.getElementById('ob-items').innerHTML=allItems.map(item=>`<div class="finding" style="gap:12px"><input type="checkbox" style="margin-top:3px;flex-shrink:0;accent-color:var(--clay);width:16px;height:16px"><div class="finding-label" style="font-weight:400">${item}</div></div>`).join('');
+  document.getElementById('ob-result').style.display='block';
+  addRecentActivity('Onboarding checklist — '+ind+', '+level.toLowerCase(),'chip-low','Saved');
+}
+
+function printChecklist() { window.print(); }
+
+// PERFORMANCE
+function buildPerfGuide() {
+  const issue=document.querySelector('.radio-opt input[name="perf-issue"]:checked');
+  const stage=document.getElementById('perf-stage').value;
+  if(!issue||!stage){alert('Please complete all fields.');return;}
+  const issueText=issue.closest('.radio-opt').querySelector('.radio-text').textContent;
+  let steps=[];
+  const isSerious=issueText.includes('Serious');
+  const isConsidering=stage.includes('Considering');
+  const isSecondWarning=stage.includes('second');
+  if(isSerious){
+    steps=[{t:'Stand the employee down on full pay',d:'You may stand down pending investigation. Do not dismiss on the spot — due process must still be followed.',urgent:true},{t:'Conduct a thorough investigation immediately',d:'Gather evidence, secure any relevant documents or CCTV, interview witnesses, and keep detailed records before speaking to the employee.'},{t:'Provide written notice of allegations',d:'Write to the employee formally outlining the allegations. Give them a reasonable opportunity (minimum 24 hours) to prepare a response.'},{t:'Conduct a show cause meeting',d:'Hold a formal meeting. The employee has the right to bring a support person. Listen to their response genuinely before making any decision.'},{t:'Issue written outcome',d:'Document your decision and reasons in writing. If dismissing, include final pay entitlements and any applicable conditions. Keep a signed copy.'}];
+  } else if(stage.includes('Just noticed')){
+    steps=[{t:'Document your observations first',d:'Write down specific examples with dates, times, and witnesses before any conversation. Vague concerns will not hold up later.'},{t:'Have a private informal conversation',d:'Speak with the employee in private. Be specific about the issue, ask for their perspective, and give them a fair chance to explain. Take notes.'},{t:'Set clear written expectations',d:'Follow up with a brief email confirming what was discussed, what improvement is needed, and the timeframe. Simple is fine at this stage.'}];
+  } else if(stage.includes('informal')){
+    steps=[{t:'Issue a first formal written warning',d:'The warning must be specific about the issue, state the required improvement clearly, set a review timeframe (typically 30 to 90 days), and be signed by both parties.'},{t:'Create a performance improvement plan',d:'For underperformance, attach a simple PIP with measurable goals, the support you will provide, and scheduled review dates.'},{t:'Schedule and document regular check-ins',d:'Meet with the employee during the review period. Document each conversation including their response and any progress made.'}];
+  } else if(isSecondWarning||isConsidering){
+    steps=[{t:'Ensure all documentation is complete',d:'Review all warnings, PIPs, meeting notes, and correspondence. Every document must be dated, specific, and ideally signed.',urgent:isConsidering},{t:'Issue a show cause letter',d:'Write formally to the employee stating your intention to consider termination and the reasons. Give at least 24 to 48 hours to respond.',urgent:isConsidering},{t:'Conduct the show cause meeting',d:'Hold the meeting, allow a support person, and genuinely consider their response before making any final decision.'},{t:'Issue written outcome and termination letter if proceeding',d:'Document your decision in full. Include the reason, final pay entitlements (including any notice period or payment in lieu), and return of company property.'},{t:'Run the termination risk calculator',d:'Before issuing any letter, check your documentation against the risk calculator to confirm your position is defensible.'}];
+  } else {
+    steps=[{t:'Issue a second formal written warning',d:'Follow the same process as the first warning. Make explicitly clear that failure to meet requirements may result in termination.'},{t:'Document all support provided',d:'Record every check-in, all feedback given, and the employee\'s responses. This is critical evidence of a fair and thorough process.'},{t:'Review progress against the improvement plan',d:'Assess objectively against the agreed criteria. Be consistent and fair — the same standard must apply to all employees.'}];
+  }
+  document.getElementById('perf-steps').innerHTML=steps.map((s,i)=>`<div class="step-item"><div class="step-num ${s.urgent?'urgent':''}">${i+1}</div><div><div class="step-label">${s.t}</div><div class="step-desc">${s.d}</div></div></div>`).join('');
+  document.getElementById('perf-result').style.display='block';
+  addRecentActivity('Performance guide — '+issueText.split('—')[0].trim(),'chip-med','Generated');
+}
+
+// CONTRACT CHECK
+function checkClauses() {
+  const checked=Array.from(document.querySelectorAll('#clause-checks .check-opt.sel')).map(el=>el.querySelector('.check-text').textContent.trim());
+  const all=['Position title and description','Base salary or hourly rate','Employment type (FT/PT/Casual)','Probationary period','Leave entitlements','Notice period — both parties','Confidentiality clause','Fair Work Information Statement','Award or agreement reference','Superannuation details'];
+  const missing=all.filter(c=>!checked.includes(c));
+  const score=Math.round((checked.length/all.length)*100);
+  const scoreEl=document.getElementById('clause-score');
+  scoreEl.textContent=score+'% complete';
+  scoreEl.className='risk-chip '+(score>=80?'chip-low':score>=50?'chip-med':'chip-high');
+  const descs={'Fair Work Information Statement':'Legally required — must be given to all new employees on or before their start date. Non-compliance attracts penalties.','Notice period — both parties':'Without a clear notice period you cannot enforce notice obligations when an employee resigns, and termination notice becomes unclear.','Award or agreement reference':'Identifies the Modern Award governing the employment. Essential for pay and entitlement compliance.','Employment type (FT/PT/Casual)':'Determines entitlements including annual leave, sick leave, redundancy, and casual conversion rights.','Probationary period':'Limits unfair dismissal access in the first 6 months for small business, 12 months for others. Without it you may have exposure from day one.','Superannuation details':'Must reflect the current Superannuation Guarantee rate and include a default fund or employee choice information.','Confidentiality clause':'Protects your business information, client relationships, and trade practices if the employment ends.','Leave entitlements':'Should reference the NES minimums for the role type and any Award-specific leave provisions.','Base salary or hourly rate':'Without a documented rate, pay disputes become very difficult to resolve and Award compliance is harder to demonstrate.','Position title and description':'Protects against claims of role change or constructive dismissal, and provides the basis for performance management.'};
+  const priority={'Fair Work Information Statement':'high','Notice period — both parties':'high','Award or agreement reference':'high','Employment type (FT/PT/Casual)':'high','Probationary period':'high'};
+  const html=[];
+  if(missing.length>0){
+    html.push('<div style="font-size:0.7rem;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:0.75rem">Missing or unclear</div>');
+    html.push(...missing.map(m=>`<div class="finding"><div class="finding-dot" style="background:${priority[m]==='high'?'#A32D2D':'#854F0B'}"></div><div><div class="finding-label">${m}</div><div class="finding-desc">${descs[m]||'Recommended for a legally robust employment contract.'}</div></div></div>`));
+  }
+  if(checked.length>0){
+    html.push('<div style="font-size:0.7rem;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin:0.75rem 0">In place</div>');
+    html.push(...checked.map(c=>`<div class="finding"><div class="finding-dot" style="background:#3B6D11"></div><div><div class="finding-label">${c}</div></div></div>`));
+  }
+  document.getElementById('clause-findings').innerHTML=html.join('');
+  document.getElementById('clause-result').style.display='block';
+  addRecentActivity('Contract clause check — '+score+'% complete',score>=80?'chip-low':score>=50?'chip-med':'chip-high',score+'% complete');
+}
+
+// RECENT ACTIVITY
+function addRecentActivity(label, chipClass, chipText) {
+  const list=document.getElementById('recent-list');
+  const row=document.createElement('div');
+  row.className='recent-row';
+  row.innerHTML=`<div class="recent-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="recent-label">${label}</div><span class="risk-chip ${chipClass}">${chipText}</span><div class="recent-date">Just now</div>`;
+  if(list.querySelector('div[style]')) list.innerHTML='';
+  list.prepend(row);
+  document.getElementById('stat-saves').textContent=parseInt(document.getElementById('stat-saves').textContent)+1;
+}
+</script>
+</body>
+</html>
