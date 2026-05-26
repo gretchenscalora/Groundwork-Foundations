@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 
-const STRIPE_WEBHOOK_SECRET = 'whsec_vJvrvou4CaledlH9MSutUNFtKamvenK7';
-const SUPABASE_URL = 'https://tmevwjupswenhbdykazd.supabase.co';
-const SUPABASE_SERVICE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRtZXZ3anVwc3dlbmhiZHlrYXpkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTc1NzUwMiwiZXhwIjoyMDk1MzMzNTAyfQ.bsrAzx-G1XDsilTiwXD4SLQNWwUst09fkfSPM_dko0E';
+const STRIPE_WEBHOOK_SECRET = process.env.STRIPE_WEBHOOK_SECRET;
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 const ESSENTIAL_PRICE_ID = 'price_1TbD5qCxDwkyvY6bBZmJ4qiV';
 const PROFESSIONAL_PRICE_ID = 'price_1TbD0OCxDwkyvY6bXfIie2IN';
