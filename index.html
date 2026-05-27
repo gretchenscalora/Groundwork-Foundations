@@ -354,8 +354,8 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--tex
         </div>
         <div class="nav-section">Professional tools</div>
         <div class="nav-item locked" id="nav-policy" onclick="showPanel('upgrade',null)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-          Policy generator
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Employee handbook
         </div>
         <div class="nav-item locked" id="nav-contract" onclick="showPanel('upgrade',null)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -428,8 +428,8 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--tex
             </div>
             <div class="tool-card locked" onclick="showPanel('upgrade',null)">
               <div class="tool-icon sage-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
-              <div class="tool-name">HR policy generator</div>
-              <div class="tool-desc">AI-generated policy documents tailored to your business type.</div>
+              <div class="tool-name">Employee handbook generator</div>
+              <div class="tool-desc">AI-generated handbook tailored to your business.</div>
               <span class="tool-badge badge-lock">Professional</span>
             </div>
             <div class="tool-card locked" onclick="showPanel('upgrade',null)">
@@ -656,16 +656,132 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--tex
           </div>
         </div>
 
-        <!-- POLICY GENERATOR (Pro) -->
+        <!-- EMPLOYEE HANDBOOK GENERATOR (Pro) -->
         <div class="panel" id="panel-policy">
           <div class="tool-header">
-            <div class="tool-title">HR policy <em>generator</em></div>
+            <div class="tool-title">Employee handbook <em>generator</em></div>
+            <div class="tool-subtitle">Answer the questions below and we'll generate a complete, customised employee handbook using AI — tailored to your industry, size, and location. Download it and book a review with Gretchen before issuing to staff.</div>
           </div>
-          <div class="upgrade-lock">
-            <div class="upgrade-lock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-            <h3>Professional plan required</h3>
-            <p>The AI policy generator creates custom HR policy documents tailored to your industry, business size, and applicable Modern Award. Upgrade to Professional to access this tool.</p>
-            <button class="btn-primary" onclick="showPanel('upgrade',null)">See Professional plan</button>
+
+          <div style="background:rgba(196,131,90,0.06);border:1px solid rgba(196,131,90,0.2);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.5rem">
+            <div style="font-size:0.72rem;font-weight:500;color:var(--clay-deep);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem">What will be included</div>
+            <div style="font-size:0.8rem;color:var(--earth-mid);line-height:1.7">Welcome & introduction · Values & culture · Employment conditions · Code of conduct · Bullying, harassment & discrimination · Performance management · Disciplinary procedure · Grievance process · Work health & safety · Social media & technology · Confidentiality · Right to disconnect · Leave entitlements · Remuneration · Termination & resignation</div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="form-lbl">Business name</label>
+              <input type="text" class="form-text-input" id="hb-name" placeholder="e.g. Holloway Pastoral Co.">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Industry</label>
+              <select class="form-select" id="hb-industry">
+                <option value="">Select...</option>
+                <option>Agricultural and pastoral</option>
+                <option>Construction and trade</option>
+                <option>Community and health</option>
+                <option>Retail and hospitality</option>
+                <option>Professional services</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Number of employees</label>
+              <select class="form-select" id="hb-size">
+                <option value="">Select...</option>
+                <option>1 to 5</option>
+                <option>6 to 20</option>
+                <option>21 to 50</option>
+                <option>50 plus</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">State or territory</label>
+              <select class="form-select" id="hb-state">
+                <option value="">Select...</option>
+                <option>Queensland</option>
+                <option>New South Wales</option>
+                <option>Victoria</option>
+                <option>Western Australia</option>
+                <option>South Australia</option>
+                <option>Northern Territory</option>
+                <option>Tasmania</option>
+                <option>ACT</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Primary work location</label>
+              <select class="form-select" id="hb-location">
+                <option value="">Select...</option>
+                <option>Remote or rural property</option>
+                <option>Regional town or office</option>
+                <option>Multiple sites or properties</option>
+                <option>Mix of office and field</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Employment types in your business</label>
+              <select class="form-select" id="hb-emptype">
+                <option value="">Select...</option>
+                <option>Full time only</option>
+                <option>Full time and part time</option>
+                <option>Mix including casuals</option>
+                <option>Mix including seasonal workers</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Pay cycle</label>
+              <select class="form-select" id="hb-pay">
+                <option value="">Select...</option>
+                <option>Weekly</option>
+                <option>Fortnightly</option>
+                <option>Monthly</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Applicable Modern Award (if known)</label>
+              <select class="form-select" id="hb-award">
+                <option value="">Select or leave blank</option>
+                <option>Pastoral Award 2020</option>
+                <option>Building and Construction Award</option>
+                <option>Health Professionals Award</option>
+                <option>General Retail Industry Award</option>
+                <option>Road Transport Award</option>
+                <option>Clerks Private Sector Award</option>
+                <option>Not award covered</option>
+                <option>Not sure</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top:0.5rem">
+            <label class="form-lbl">Anything specific to include? (optional)</label>
+            <textarea class="form-text-input" id="hb-extra" rows="2" placeholder="e.g. we have a FIFO roster, we use Employment Hero for timesheets, employees live on-site, we have a no-alcohol policy on property..." style="resize:vertical;min-height:60px"></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" onclick="generateHandbook()">Generate handbook</button>
+            <button class="btn-secondary" onclick="resetHandbook()">Reset</button>
+          </div>
+
+          <div id="hb-loading" style="display:none;margin-top:1.5rem">
+            <div style="display:flex;align-items:center;gap:12px;padding:1.25rem;border:1px solid var(--border);border-radius:4px;background:var(--warm-white)">
+              <div class="loading-dots"><span></span><span></span><span></span></div>
+              <div style="font-size:0.85rem;color:var(--text-muted)">Generating your employee handbook — this takes about 45 seconds...</div>
+            </div>
+          </div>
+
+          <div id="hb-result" style="display:none;margin-top:1.5rem">
+            <div style="border:1px solid rgba(196,131,90,0.25);border-radius:4px;overflow:hidden">
+              <div style="padding:0.85rem 1.25rem;background:rgba(196,131,90,0.06);border-bottom:1px solid rgba(196,131,90,0.18);display:flex;align-items:center;justify-content:space-between">
+                <div style="font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--clay-deep)">AI generated employee handbook draft</div>
+                <button class="btn-secondary" style="padding:4px 12px;font-size:0.72rem" onclick="downloadHandbook()">Download .txt</button>
+              </div>
+              <div id="hb-output" style="padding:1.25rem;font-size:0.85rem;color:var(--text-primary);line-height:1.8;max-height:480px;overflow-y:auto;white-space:pre-wrap;font-family:var(--font-body)"></div>
+              <div style="padding:1rem 1.25rem;border-top:1px solid var(--border);background:var(--cream)">
+                <div style="font-size:0.75rem;color:var(--earth-mid);line-height:1.6;margin-bottom:0.75rem"><strong style="color:var(--earth);font-weight:500">Important disclaimer:</strong> This handbook has been generated as a starting point only. Employment law and Modern Award obligations vary by industry, state, and circumstance. It must be reviewed by a qualified HR professional before issuing to staff. Groundwork Consulting recommends a review call before use.</div>
+                <a href="#contact" class="btn-primary" style="font-size:0.75rem;padding:0.65rem 1.5rem;text-decoration:none;display:inline-block">Book a review call with Gretchen</a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -673,12 +789,140 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--tex
         <div class="panel" id="panel-contract-build">
           <div class="tool-header">
             <div class="tool-title">Employment contract <em>builder</em></div>
+            <div class="tool-subtitle">Enter the role details and we'll generate a professionally structured employment contract draft based on Australian employment law. Download and have Gretchen review before issuing.</div>
           </div>
-          <div class="upgrade-lock">
-            <div class="upgrade-lock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-            <h3>Professional plan required</h3>
-            <p>The contract builder generates a compliant employment contract draft based on your role details. Upgrade to Professional to access this tool.</p>
-            <button class="btn-primary" onclick="showPanel('upgrade',null)">See Professional plan</button>
+
+          <div style="background:rgba(196,131,90,0.06);border:1px solid rgba(196,131,90,0.2);border-radius:4px;padding:1rem 1.25rem;margin-bottom:1.5rem">
+            <div style="font-size:0.72rem;font-weight:500;color:var(--clay-deep);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.4rem">Contract sections included</div>
+            <div style="font-size:0.8rem;color:var(--earth-mid);line-height:1.7">Background & definitions · Position and duties · Employment type · Commencement date · Place of work · Hours of work · Remuneration · Superannuation · Probationary period · Leave entitlements (NES) · Notice of termination · Confidentiality · Conflict of interest · Intellectual property · Return of company property · Applicable award · Fair Work Information Statement · Schedule 1 (terms and conditions)</div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-row">
+              <label class="form-lbl">Employer / business name</label>
+              <input type="text" class="form-text-input" id="cb-employer" placeholder="e.g. Holloway Pastoral Co. Pty Ltd">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">ABN (optional)</label>
+              <input type="text" class="form-text-input" id="cb-abn" placeholder="e.g. 12 345 678 901">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Employee full name</label>
+              <input type="text" class="form-text-input" id="cb-employee" placeholder="e.g. James Smith">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Employee address</label>
+              <input type="text" class="form-text-input" id="cb-address" placeholder="e.g. 12 Main St, Longreach QLD 4730">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Position title</label>
+              <input type="text" class="form-text-input" id="cb-title" placeholder="e.g. Station Hand">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Employment type</label>
+              <select class="form-select" id="cb-type">
+                <option value="">Select...</option>
+                <option>Full time permanent</option>
+                <option>Part time permanent</option>
+                <option>Casual</option>
+                <option>Seasonal</option>
+                <option>Fixed term contract</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Remuneration</label>
+              <input type="text" class="form-text-input" id="cb-pay" placeholder="e.g. $65,000 per annum or $28.50 per hour">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Hours of work</label>
+              <input type="text" class="form-text-input" id="cb-hours" placeholder="e.g. 38 hours per week, Monday to Friday">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Start date</label>
+              <input type="text" class="form-text-input" id="cb-start" placeholder="e.g. 1 July 2026">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Work location</label>
+              <input type="text" class="form-text-input" id="cb-location" placeholder="e.g. Holloway Station, Longreach QLD">
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Probation period</label>
+              <select class="form-select" id="cb-probation">
+                <option value="">Select...</option>
+                <option>3 months</option>
+                <option>6 months</option>
+                <option>No probation period</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Notice period</label>
+              <select class="form-select" id="cb-notice">
+                <option value="">Select...</option>
+                <option>1 week</option>
+                <option>2 weeks</option>
+                <option>4 weeks</option>
+                <option>As per NES minimums</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Applicable Modern Award</label>
+              <select class="form-select" id="cb-award">
+                <option value="">Select...</option>
+                <option>Pastoral Award 2020</option>
+                <option>Building and Construction Award</option>
+                <option>Health Professionals Award</option>
+                <option>General Retail Industry Award</option>
+                <option>Road Transport Award</option>
+                <option>Clerks Private Sector Award</option>
+                <option>Not award covered</option>
+                <option>Not sure</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">State or territory</label>
+              <select class="form-select" id="cb-state">
+                <option value="">Select...</option>
+                <option>Queensland</option>
+                <option>New South Wales</option>
+                <option>Victoria</option>
+                <option>Western Australia</option>
+                <option>South Australia</option>
+                <option>Northern Territory</option>
+                <option>Tasmania</option>
+                <option>ACT</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top:0.5rem">
+            <label class="form-lbl">Special conditions or additional clauses (optional)</label>
+            <textarea class="form-text-input" id="cb-extra" rows="2" placeholder="e.g. employee will reside in on-site accommodation, vehicle provided, restraint of trade clause required, salary sacrifice arrangement..." style="resize:vertical;min-height:60px"></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" onclick="generateContract()">Generate contract</button>
+            <button class="btn-secondary" onclick="resetContract()">Reset</button>
+          </div>
+
+          <div id="cb-loading" style="display:none;margin-top:1.5rem">
+            <div style="display:flex;align-items:center;gap:12px;padding:1.25rem;border:1px solid var(--border);border-radius:4px;background:var(--warm-white)">
+              <div class="loading-dots"><span></span><span></span><span></span></div>
+              <div style="font-size:0.85rem;color:var(--text-muted)">Generating your contract draft — this takes about 45 seconds...</div>
+            </div>
+          </div>
+
+          <div id="cb-result" style="display:none;margin-top:1.5rem">
+            <div style="border:1px solid rgba(196,131,90,0.25);border-radius:4px;overflow:hidden">
+              <div style="padding:0.85rem 1.25rem;background:rgba(196,131,90,0.06);border-bottom:1px solid rgba(196,131,90,0.18);display:flex;align-items:center;justify-content:space-between">
+                <div style="font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--clay-deep)">AI generated contract draft</div>
+                <button class="btn-secondary" style="padding:4px 12px;font-size:0.72rem" onclick="downloadContract()">Download .txt</button>
+              </div>
+              <div id="cb-output" style="padding:1.25rem;font-size:0.85rem;color:var(--text-primary);line-height:1.8;max-height:480px;overflow-y:auto;white-space:pre-wrap;font-family:var(--font-body)"></div>
+              <div style="padding:1rem 1.25rem;border-top:1px solid var(--border);background:var(--cream)">
+                <div style="font-size:0.75rem;color:var(--earth-mid);line-height:1.6;margin-bottom:0.75rem"><strong style="color:var(--earth);font-weight:500">Important disclaimer:</strong> This is a draft only. It must not be signed or issued without professional review. Employment contracts must comply with applicable Modern Awards and the National Employment Standards. Groundwork Consulting strongly recommends a review before use.</div>
+                <a href="#contact" class="btn-primary" style="font-size:0.75rem;padding:0.65rem 1.5rem;text-decoration:none;display:inline-block">Book a review call with Gretchen</a>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -686,16 +930,105 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--tex
         <div class="panel" id="panel-ir">
           <div class="tool-header">
             <div class="tool-title">IR case prep <em>assistant</em></div>
+            <div class="tool-subtitle">Describe your situation and get a structured preparation guide covering what documents to gather, what to say, what to expect at conciliation, and your key risks and likely outcomes.</div>
           </div>
-          <div class="upgrade-lock">
-            <div class="upgrade-lock-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-            <h3>Professional plan required</h3>
-            <p>The IR case prep assistant helps you prepare for Fair Work conciliation, outlining what to say, what documents to bring, and likely outcomes. Upgrade to Professional to access this tool.</p>
-            <button class="btn-primary" onclick="showPanel('upgrade',null)">See Professional plan</button>
+
+          <div class="form-row">
+            <label class="form-lbl">Type of matter</label>
+            <div class="radio-group">
+              <label class="radio-opt" onclick="sel(this,'ir-type')"><input type="radio" name="ir-type"><div class="radio-text">Unfair dismissal claim<div class="radio-sub">Employee claims their dismissal was harsh, unjust, or unreasonable</div></div></label>
+              <label class="radio-opt" onclick="sel(this,'ir-type')"><input type="radio" name="ir-type"><div class="radio-text">General protections claim<div class="radio-sub">Employee claims dismissal or adverse action for exercising a workplace right</div></div></label>
+              <label class="radio-opt" onclick="sel(this,'ir-type')"><input type="radio" name="ir-type"><div class="radio-text">Bullying application<div class="radio-sub">Employee has applied to Fair Work Commission alleging workplace bullying</div></div></label>
+              <label class="radio-opt" onclick="sel(this,'ir-type')"><input type="radio" name="ir-type"><div class="radio-text">Underpayment or wage claim<div class="radio-sub">Employee claims they were underpaid wages, leave, or entitlements</div></div></label>
+              <label class="radio-opt" onclick="sel(this,'ir-type')"><input type="radio" name="ir-type"><div class="radio-text">Conciliation preparation<div class="radio-sub">Preparing for an upcoming Fair Work conciliation conference</div></div></label>
+            </div>
+          </div>
+
+          <div class="form-grid" style="margin-top:1rem">
+            <div class="form-row">
+              <label class="form-lbl">Employee length of service</label>
+              <select class="form-select" id="ir-tenure">
+                <option value="">Select...</option>
+                <option>Under 6 months</option>
+                <option>6 months to 1 year</option>
+                <option>1 to 3 years</option>
+                <option>3 to 5 years</option>
+                <option>Over 5 years</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Business size</label>
+              <select class="form-select" id="ir-size">
+                <option value="">Select...</option>
+                <option>Small business (under 15 employees)</option>
+                <option>Medium business (15 to 50)</option>
+                <option>Larger business (50 plus)</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">State or territory</label>
+              <select class="form-select" id="ir-state">
+                <option value="">Select...</option>
+                <option>Queensland</option>
+                <option>New South Wales</option>
+                <option>Victoria</option>
+                <option>Western Australia</option>
+                <option>South Australia</option>
+                <option>Northern Territory</option>
+                <option>Tasmania</option>
+                <option>ACT</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-lbl">Was the employee dismissed?</label>
+              <select class="form-select" id="ir-dismissed">
+                <option value="">Select...</option>
+                <option>Yes — we terminated their employment</option>
+                <option>Yes — they resigned (possible constructive dismissal)</option>
+                <option>No — still employed, matter relates to conduct or conditions</option>
+                <option>Contract ended — end of fixed term</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row" style="margin-top:0.5rem">
+            <label class="form-lbl">Describe your situation in as much detail as possible</label>
+            <textarea class="form-text-input" id="ir-situation" rows="5" placeholder="What happened, when it happened, what process you followed, what documentation you have, and what stage the matter is currently at. The more detail you provide, the more useful your preparation guide will be." style="resize:vertical;min-height:120px"></textarea>
+          </div>
+
+          <div class="form-row">
+            <label class="form-lbl">What documentation do you currently have on file? (optional)</label>
+            <textarea class="form-text-input" id="ir-docs" rows="2" placeholder="e.g. written warnings, performance improvement plan, termination letter, payslips, time and attendance records..." style="resize:vertical;min-height:60px"></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-primary" onclick="generateIRPrep()">Generate prep guide</button>
+            <button class="btn-secondary" onclick="resetIR()">Reset</button>
+          </div>
+
+          <div id="ir-loading" style="display:none;margin-top:1.5rem">
+            <div style="display:flex;align-items:center;gap:12px;padding:1.25rem;border:1px solid var(--border);border-radius:4px;background:var(--warm-white)">
+              <div class="loading-dots"><span></span><span></span><span></span></div>
+              <div style="font-size:0.85rem;color:var(--text-muted)">Preparing your case guide — this takes about 30 seconds...</div>
+            </div>
+          </div>
+
+          <div id="ir-result" style="display:none;margin-top:1.5rem">
+            <div style="border:1px solid rgba(196,131,90,0.25);border-radius:4px;overflow:hidden">
+              <div style="padding:0.85rem 1.25rem;background:rgba(196,131,90,0.06);border-bottom:1px solid rgba(196,131,90,0.18);display:flex;align-items:center;justify-content:space-between">
+                <div style="font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--clay-deep)">Your IR case preparation guide</div>
+                <button class="btn-secondary" style="padding:4px 12px;font-size:0.72rem" onclick="downloadIR()">Download .txt</button>
+              </div>
+              <div id="ir-output" style="padding:1.25rem;font-size:0.85rem;color:var(--text-primary);line-height:1.8;max-height:480px;overflow-y:auto;white-space:pre-wrap;font-family:var(--font-body)"></div>
+              <div style="padding:1rem 1.25rem;border-top:1px solid var(--border);background:var(--cream)">
+                <div style="font-size:0.75rem;color:var(--earth-mid);line-height:1.6;margin-bottom:0.75rem"><strong style="color:var(--earth);font-weight:500">Important:</strong> This guide is for preparation purposes only and does not constitute legal advice. Fair Work matters carry real risk — a call with Gretchen before your conciliation could make a significant difference to the outcome.</div>
+                <a href="#contact" class="btn-primary" style="font-size:0.75rem;padding:0.65rem 1.5rem;text-decoration:none;display:inline-block">Book an urgent call with Gretchen</a>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- UPGRADE / PLANS -->
+                <!-- UPGRADE / PLANS -->
         <div class="panel" id="panel-upgrade">
           <div class="tool-header">
             <div class="tool-title">Plans &amp; <em>pricing</em></div>
@@ -1029,6 +1362,326 @@ function addRecentActivity(label, chipClass, chipText) {
   if(list.querySelector('div[style]')) list.innerHTML='';
   list.prepend(row);
   document.getElementById('stat-saves').textContent=parseInt(document.getElementById('stat-saves').textContent)+1;
+}
+
+// ── PROFESSIONAL AI TOOLS ──────────────────────────────────────
+
+async function callClaude(prompt) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+  if (!response.ok) throw new Error('API request failed');
+  const data = await response.json();
+  return data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+}
+
+function downloadText(text, filename) {
+  const blob = new Blob([text], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function generateHandbook() {
+  const name = document.getElementById('hb-name').value.trim();
+  const industry = document.getElementById('hb-industry').value;
+  const size = document.getElementById('hb-size').value;
+  const location = document.getElementById('hb-location').value;
+  const state = document.getElementById('hb-state').value;
+  const emptype = document.getElementById('hb-emptype').value;
+  const pay = document.getElementById('hb-pay').value;
+  const award = document.getElementById('hb-award').value;
+  const extra = document.getElementById('hb-extra').value.trim();
+  if (!name || !industry || !size || !location || !state || !emptype || !pay) { alert('Please complete all required fields before generating.'); return; }
+  document.getElementById('hb-loading').style.display = 'block';
+  document.getElementById('hb-result').style.display = 'none';
+  const prompt = `You are an expert Australian HR consultant writing a professional employee handbook for a real regional business. Base the tone, structure and content on the standards used by quality agricultural and regional employers in Australia.
+
+Business details:
+- Business name: ${name}
+- Industry: ${industry}
+- Number of employees: ${size}
+- Work location: ${location}
+- State/Territory: ${state}
+- Employment types: ${emptype}
+- Pay cycle: ${pay}
+- Applicable Modern Award: ${award || 'not specified'}
+${extra ? '- Additional context: ' + extra : ''}
+
+Write a complete, professionally structured employee handbook. Use clear numbered section headings. Include all of the following sections tailored specifically to this business:
+
+1. INTRODUCTION
+   1.1 Welcome message from the employer
+   1.2 Purpose of this handbook
+   1.3 Principle of equality
+   1.4 Your direct manager
+   1.5 Access to Award and NES
+
+2. JOINING THE ORGANISATION
+   2.1 Induction process
+   2.2 Probationary period
+   2.3 Job description and role changes
+   2.4 Training and development
+   2.5 Performance appraisals
+   2.6 Change of personal details
+   2.7 Flexible working arrangements
+   2.8 Mobility requirements
+
+3. REMUNERATION AND HOURS
+   3.1 Pay administration (including pay cycle: ${pay})
+   3.2 Expense claims
+   3.3 Superannuation (current SG rate)
+   3.4 Hours of work
+   3.5 Right to disconnect
+   3.6 Breaks
+
+4. LEAVE ENTITLEMENTS
+   4.1 Annual leave (per NES)
+   4.2 Personal/carer's leave (per NES)
+   4.3 Parental leave (per NES)
+   4.4 Community service leave
+   4.5 Long service leave
+   4.6 Public holidays
+   4.7 Leave without pay
+
+5. CODE OF CONDUCT
+   5.1 General conduct expectations
+   5.2 Attendance and punctuality
+   5.3 Dress and presentation
+   5.4 Use of company property and vehicles
+   5.5 Alcohol and drugs policy
+   5.6 Conflict of interest
+   5.7 Confidentiality
+   5.8 Social media and technology
+
+6. WORK HEALTH AND SAFETY
+   6.1 WHS obligations
+   6.2 Reporting hazards and incidents
+   6.3 Personal protective equipment
+   6.4 Return to work
+
+7. BULLYING, HARASSMENT AND DISCRIMINATION
+   7.1 Our commitment
+   7.2 What constitutes bullying and harassment
+   7.3 Sexual harassment
+   7.4 Discrimination
+   7.5 Reporting process
+   7.6 Consequences
+
+8. PERFORMANCE MANAGEMENT
+   8.1 Performance expectations
+   8.2 Managing underperformance
+   8.3 Disciplinary procedure
+   8.4 Serious misconduct
+
+9. GRIEVANCE PROCEDURE
+   9.1 Raising a concern
+   9.2 Formal grievance process
+   9.3 External options
+
+10. TERMINATION OF EMPLOYMENT
+    10.1 Resignation
+    10.2 Termination by the employer
+    10.3 Redundancy
+    10.4 Return of company property
+    10.5 Final pay
+
+Write each section in full with practical detail. Use plain English. Reference Australian employment law, the NES, and the applicable Modern Award where relevant. Tailor examples and language to the ${industry} industry. This is a DRAFT for professional review before issuing to staff.`;
+  try {
+    const result = await callClaude(prompt);
+    document.getElementById('hb-output').textContent = result;
+    document.getElementById('hb-result').style.display = 'block';
+    addRecentActivity('Employee handbook — ' + name, 'chip-low', 'Generated');
+  } catch(e) { alert('Generation failed. Please try again.'); }
+  finally { document.getElementById('hb-loading').style.display = 'none'; }
+}
+function downloadHandbook() {
+  const text = document.getElementById('hb-output').textContent;
+  const name = document.getElementById('hb-name').value || 'business';
+  downloadText(text, name.replace(/\s+/g,'-') + '-employee-handbook-draft.txt');
+}
+function resetHandbook() {
+  ['hb-name','hb-industry','hb-size','hb-location','hb-state','hb-emptype','hb-pay','hb-award','hb-extra'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('hb-loading').style.display = 'none';
+  document.getElementById('hb-result').style.display = 'none';
+}
+
+async function generateContract() {
+  const employer = document.getElementById('cb-employer').value.trim();
+  const employee = document.getElementById('cb-employee').value.trim();
+  const title = document.getElementById('cb-title').value.trim();
+  const type = document.getElementById('cb-type').value;
+  const pay = document.getElementById('cb-pay').value.trim();
+  const hours = document.getElementById('cb-hours').value.trim();
+  const start = document.getElementById('cb-start').value.trim();
+  const location = document.getElementById('cb-location').value.trim();
+  const probation = document.getElementById('cb-probation').value;
+  const notice = document.getElementById('cb-notice').value;
+  const award = document.getElementById('cb-award').value;
+  const state = document.getElementById('cb-state').value;
+  const abn = document.getElementById('cb-abn').value.trim();
+  const address = document.getElementById('cb-address').value.trim();
+  const extra = document.getElementById('cb-extra').value.trim();
+  if (!employer || !employee || !title || !type || !pay || !hours || !start || !location || !probation || !notice || !award || !state) {
+    alert('Please complete all required fields before generating.'); return;
+  }
+  document.getElementById('cb-loading').style.display = 'block';
+  document.getElementById('cb-result').style.display = 'none';
+  const prompt = `You are an expert Australian HR consultant drafting a professional employment contract. Model the structure on high-quality Australian employment contracts used by agricultural and regional businesses.
+
+Contract details:
+- Employer: ${employer}${abn ? ' (ABN: ' + abn + ')' : ''}
+- Employee name: ${employee}
+- Employee address: ${address || 'to be confirmed'}
+- Position: ${title}
+- Employment type: ${type}
+- Remuneration: ${pay}
+- Hours of work: ${hours}
+- Start date: ${start}
+- Work location: ${location}
+- Probationary period: ${probation}
+- Notice period: ${notice}
+- Applicable Modern Award: ${award}
+- State/Territory: ${state}
+${extra ? '- Special conditions: ' + extra : ''}
+
+Draft a complete, professionally structured employment contract. Include the following numbered clauses:
+
+BACKGROUND (A, B, C recitals)
+
+1. DEFINITIONS
+2. COMMENCEMENT
+3. POSITION AND DUTIES
+4. EMPLOYMENT TYPE
+5. PLACE OF WORK
+6. HOURS OF WORK
+7. REMUNERATION
+8. SUPERANNUATION (current SG rate)
+9. PROBATIONARY PERIOD
+10. ANNUAL LEAVE (per NES)
+11. PERSONAL/CARER'S LEAVE (per NES)
+12. PARENTAL LEAVE (per NES)
+13. COMMUNITY SERVICE LEAVE
+14. PUBLIC HOLIDAYS
+15. LONG SERVICE LEAVE
+16. NOTICE OF TERMINATION (both parties, per NES and as specified)
+17. SUMMARY DISMISSAL
+18. REDUNDANCY
+19. RETURN OF PROPERTY
+20. CONFIDENTIALITY
+21. INTELLECTUAL PROPERTY
+22. CONFLICT OF INTEREST
+23. SECONDARY EMPLOYMENT
+24. RIGHT TO DISCONNECT
+25. SALARY SACRIFICE (if applicable)
+26. EXPENSES
+27. VARIATIONS
+28. ENTIRE AGREEMENT
+29. FAIR WORK INFORMATION STATEMENT
+30. EMPLOYEE HANDBOOK
+31. GOVERNING LAW (${state})
+
+Include a SCHEDULE 1 - TERMS AND CONDITIONS table at the end with: Item 1 Employer Name and Details, Item 2 Employee Name and Details, Item 3 Position, Item 4 Commencement Date, Item 5 Employment Type, Item 6 Remuneration, Item 7 Hours, Item 8 Probation Period, Item 9 Notice Period, Item 10 Applicable Award.
+
+Include signature blocks for both parties with date line.
+
+Mark clearly as DRAFT at the top. Write in clear, professional legal language appropriate for an Australian employment contract.`;
+  try {
+    const result = await callClaude(prompt);
+    document.getElementById('cb-output').textContent = result;
+    document.getElementById('cb-result').style.display = 'block';
+    addRecentActivity('Contract — ' + title, 'chip-low', 'Generated');
+  } catch(e) { alert('Generation failed. Please try again.'); }
+  finally { document.getElementById('cb-loading').style.display = 'none'; }
+}
+function downloadContract() {
+  const text = document.getElementById('cb-output').textContent;
+  const name = document.getElementById('cb-employee').value || 'employee';
+  downloadText(text, name.replace(/\s+/g,'-') + '-contract-draft.txt');
+}
+function resetContract() {
+  ['cb-employer','cb-abn','cb-employee','cb-address','cb-title','cb-type','cb-pay','cb-hours','cb-start','cb-location','cb-probation','cb-notice','cb-award','cb-state','cb-extra'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('cb-loading').style.display = 'none';
+  document.getElementById('cb-result').style.display = 'none';
+}
+
+async function generateIRPrep() {
+  const type = document.querySelector('.radio-opt input[name="ir-type"]:checked');
+  const situation = document.getElementById('ir-situation').value.trim();
+  const tenure = document.getElementById('ir-tenure').value;
+  const size = document.getElementById('ir-size').value;
+  const state = document.getElementById('ir-state').value;
+  const dismissed = document.getElementById('ir-dismissed').value;
+  const docs = document.getElementById('ir-docs').value.trim();
+  if (!type || !situation || !tenure || !size || !state || !dismissed) { alert('Please complete all required fields before generating.'); return; }
+  const typeText = type.closest('.radio-opt').querySelector('.radio-text').childNodes[0].textContent.trim();
+  document.getElementById('ir-loading').style.display = 'block';
+  document.getElementById('ir-result').style.display = 'none';
+  const prompt = `You are an expert Australian HR and industrial relations consultant helping an employer prepare for a Fair Work matter. You have deep knowledge of the Fair Work Act 2009, unfair dismissal provisions, general protections, and conciliation processes.
+
+Matter details:
+- Type of claim: ${typeText}
+- State/Territory: ${state}
+- Business size: ${size}
+- Employee length of service: ${tenure}
+- Dismissal status: ${dismissed}
+- Documentation currently on file: ${docs || 'not specified'}
+- Employer's description of the situation: ${situation}
+
+Provide a thorough, honest, and practical preparation guide structured as follows:
+
+1. OVERVIEW OF THIS CLAIM TYPE
+Explain what this claim involves, the Fair Work Act provisions that apply, the process timeline, and key eligibility criteria the employee must meet.
+
+2. HONEST ASSESSMENT OF YOUR POSITION
+Based on what the employer has described, give an honest assessment of their risks and strengths. Do not sugarcoat — employers need to know their true position.
+
+3. CRITICAL GAPS IN YOUR DOCUMENTATION
+Identify any procedural or documentation gaps based on what the employer has described that could weaken their position.
+
+4. DOCUMENTS TO LOCATE AND ORGANISE
+Specific list of documents they need to find, organise, and have ready before any conference. Include what good documentation looks like and what to do if they don't have it.
+
+5. WHAT TO EXPECT AT CONCILIATION
+How Fair Work conciliation works, the role of the conciliator, what cannot be forced on them, and what a typical session looks like.
+
+6. HOW TO PRESENT YOUR CASE
+Key points to make, how to frame their position, and common mistakes employers make. Include specific language suggestions where helpful.
+
+7. WHAT NOT TO SAY
+Common statements employers make that damage their position. Be specific.
+
+8. SETTLEMENT CONSIDERATIONS
+When to consider settling, typical settlement ranges for this type of matter, and what a settlement involves.
+
+9. LIKELY OUTCOMES
+Range of realistic outcomes based on the situation described and what factors will influence the result.
+
+10. IMMEDIATE ACTION LIST
+Numbered list of everything they should do right now, in priority order.
+
+Be direct, practical, and honest. Reference specific Fair Work Act provisions (s.385, s.387, s.340 etc) where relevant. This is preparation guidance only, not legal advice — say so clearly at the end.`;
+  try {
+    const result = await callClaude(prompt);
+    document.getElementById('ir-output').textContent = result;
+    document.getElementById('ir-result').style.display = 'block';
+    addRecentActivity('IR prep — ' + typeText, 'chip-high', 'Generated');
+  } catch(e) { alert('Generation failed. Please try again.'); }
+  finally { document.getElementById('ir-loading').style.display = 'none'; }
+}
+function downloadIR() { downloadText(document.getElementById('ir-output').textContent, 'ir-case-preparation-guide.txt'); }
+function resetIR() {
+  document.querySelectorAll('.radio-opt input[name="ir-type"]').forEach(r => { r.checked = false; r.closest('.radio-opt').classList.remove('sel'); });
+  ['ir-situation','ir-tenure','ir-size','ir-state','ir-dismissed','ir-docs'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  document.getElementById('ir-loading').style.display = 'none';
+  document.getElementById('ir-result').style.display = 'none';
 }
 </script>
 </body>
