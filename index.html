@@ -366,6 +366,10 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--tex
           IR case prep
         </div>
         <div class="nav-section">Account</div>
+        <div class="nav-item" onclick="showPanel('account',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          My account
+        </div>
         <div class="nav-item" onclick="showPanel('upgrade',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="17 11 21 7 17 3"/><line x1="21" y1="7" x2="9" y2="7"/><path d="M3 21v-4a4 4 0 0 1 4-4h14"/></svg>
           Plans & pricing
@@ -779,7 +783,7 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--tex
               <div id="hb-output" style="padding:1.25rem;font-size:0.85rem;color:var(--text-primary);line-height:1.8;max-height:480px;overflow-y:auto;white-space:pre-wrap;font-family:var(--font-body)"></div>
               <div style="padding:1rem 1.25rem;border-top:1px solid var(--border);background:var(--cream)">
                 <div style="font-size:0.75rem;color:var(--earth-mid);line-height:1.6;margin-bottom:0.75rem"><strong style="color:var(--earth);font-weight:500">Important disclaimer:</strong> This handbook has been generated as a starting point only. Employment law and Modern Award obligations vary by industry, state, and circumstance. It must be reviewed by a qualified HR professional before issuing to staff. Groundwork Consulting recommends a review call before use.</div>
-                <a href="#contact" class="btn-primary" style="font-size:0.75rem;padding:0.65rem 1.5rem;text-decoration:none;display:inline-block">Book a review call with Gretchen</a>
+                <a href="https://groundworkaustralia.com.au/#contact" target="_blank" class="btn-primary" style="font-size:0.75rem;padding:0.65rem 1.5rem;text-decoration:none;display:inline-block">Book a review call with Gretchen</a>
               </div>
             </div>
           </div>
@@ -920,7 +924,7 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--tex
               <div id="cb-output" style="padding:1.25rem;font-size:0.85rem;color:var(--text-primary);line-height:1.8;max-height:480px;overflow-y:auto;white-space:pre-wrap;font-family:var(--font-body)"></div>
               <div style="padding:1rem 1.25rem;border-top:1px solid var(--border);background:var(--cream)">
                 <div style="font-size:0.75rem;color:var(--earth-mid);line-height:1.6;margin-bottom:0.75rem"><strong style="color:var(--earth);font-weight:500">Important disclaimer:</strong> This is a draft only. It must not be signed or issued without professional review. Employment contracts must comply with applicable Modern Awards and the National Employment Standards. Groundwork Consulting strongly recommends a review before use.</div>
-                <a href="#contact" class="btn-primary" style="font-size:0.75rem;padding:0.65rem 1.5rem;text-decoration:none;display:inline-block">Book a review call with Gretchen</a>
+                <a href="https://groundworkaustralia.com.au/#contact" target="_blank" class="btn-primary" style="font-size:0.75rem;padding:0.65rem 1.5rem;text-decoration:none;display:inline-block">Book a review call with Gretchen</a>
               </div>
             </div>
           </div>
@@ -1022,13 +1026,68 @@ body { font-family: var(--font-body); background: var(--cream); color: var(--tex
               <div id="ir-output" style="padding:1.25rem;font-size:0.85rem;color:var(--text-primary);line-height:1.8;max-height:480px;overflow-y:auto;white-space:pre-wrap;font-family:var(--font-body)"></div>
               <div style="padding:1rem 1.25rem;border-top:1px solid var(--border);background:var(--cream)">
                 <div style="font-size:0.75rem;color:var(--earth-mid);line-height:1.6;margin-bottom:0.75rem"><strong style="color:var(--earth);font-weight:500">Important:</strong> This guide is for preparation purposes only and does not constitute legal advice. Fair Work matters carry real risk — a call with Gretchen before your conciliation could make a significant difference to the outcome.</div>
-                <a href="#contact" class="btn-primary" style="font-size:0.75rem;padding:0.65rem 1.5rem;text-decoration:none;display:inline-block">Book an urgent call with Gretchen</a>
+                <a href="https://groundworkaustralia.com.au/#contact" target="_blank" class="btn-primary" style="font-size:0.75rem;padding:0.65rem 1.5rem;text-decoration:none;display:inline-block">Book an urgent call with Gretchen</a>
               </div>
             </div>
           </div>
         </div>
 
                 <!-- UPGRADE / PLANS -->
+        <!-- ACCOUNT SETTINGS -->
+        <div class="panel" id="panel-account">
+          <div class="tool-header">
+            <div class="tool-title">My <em>account</em></div>
+            <div class="tool-subtitle">Manage your Groundwork Foundations subscription, billing, and account details.</div>
+          </div>
+          <div class="result-card" style="margin-top:0">
+            <div class="result-header">
+              <div class="result-title">Account details</div>
+            </div>
+            <div class="result-body">
+              <div class="finding">
+                <div class="finding-dot" style="background:var(--clay)"></div>
+                <div>
+                  <div class="finding-label">Email address</div>
+                  <div class="finding-desc" id="account-email">Loading...</div>
+                </div>
+              </div>
+              <div class="finding">
+                <div class="finding-dot" style="background:var(--clay)"></div>
+                <div>
+                  <div class="finding-label">Current plan</div>
+                  <div class="finding-desc" id="account-plan">Loading...</div>
+                </div>
+              </div>
+              <div class="finding">
+                <div class="finding-dot" style="background:var(--clay)"></div>
+                <div>
+                  <div class="finding-label">Subscription status</div>
+                  <div class="finding-desc" id="account-status">Loading...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="result-card" style="margin-top:1rem">
+            <div class="result-header">
+              <div class="result-title">Billing & subscription</div>
+            </div>
+            <div class="result-body">
+              <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.65;margin-bottom:1.25rem">Manage your payment details, update your card, view invoices, or cancel your subscription through the Stripe billing portal.</p>
+              <button class="btn-primary" onclick="openBillingPortal()">Manage billing</button>
+              <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.75rem;line-height:1.5">You'll be taken to a secure Stripe page to manage your subscription.</p>
+            </div>
+          </div>
+          <div class="result-card" style="margin-top:1rem">
+            <div class="result-header">
+              <div class="result-title">Need help?</div>
+            </div>
+            <div class="result-body">
+              <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.65;margin-bottom:1rem">For questions about your account or subscription, contact Gretchen directly.</p>
+              <a href="mailto:hello@groundworkaustralia.com.au" class="btn-secondary" style="text-decoration:none;display:inline-block;padding:0.65rem 1.5rem;font-size:0.78rem">hello@groundworkaustralia.com.au</a>
+            </div>
+          </div>
+        </div>
+
         <div class="panel" id="panel-upgrade">
           <div class="tool-header">
             <div class="tool-title">Plans &amp; <em>pricing</em></div>
@@ -1157,19 +1216,65 @@ async function loadApp(user) {
 }
 
 async function loadUserPlan(user) {
-  if(!user.id || user.id==='demo') { applyPlan('essential'); return; }
+  if(!user.id || user.id==='demo') { applyPlan('essential'); loadStats('demo'); return; }
   try {
-    const { data, error } = await sb.from('profiles').select('plan,subscription_status').eq('id', user.id).single();
+    const { data, error } = await sb.from('profiles').select('plan,subscription_status,tools_used,docs_saved').eq('id', user.id).single();
     if(error || !data) { applyPlan('free'); return; }
     const plan = data.subscription_status === 'active' ? (data.plan||'free') : 'free';
     applyPlan(plan);
+    loadStats(user.id, data);
   } catch(e) { applyPlan('free'); }
+}
+
+function loadStats(userId, data) {
+  if(data && data.tools_used) document.getElementById('stat-tools').textContent = data.tools_used;
+  if(data && data.docs_saved) document.getElementById('stat-saves').textContent = data.docs_saved;
+}
+
+async function persistStat(field) {
+  if(!currentUser || currentUser.id === 'demo') return;
+  try {
+    const { data } = await sb.from('profiles').select(field).eq('id', currentUser.id).single();
+    const current = (data && data[field]) ? parseInt(data[field]) : 0;
+    await sb.from('profiles').update({ [field]: current + 1 }).eq('id', currentUser.id);
+  } catch(e) { /* silent fail */ }
+}
+
+async function openBillingPortal() {
+  if(!currentUser || currentUser.id === 'demo') { alert('Please sign in with your account to manage billing.'); return; }
+  const btn = document.querySelector('[onclick="openBillingPortal()"]');
+  if(btn) { btn.textContent = 'Loading...'; btn.disabled = true; }
+  try {
+    const res = await fetch('/.netlify/functions/billing-portal', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_id: currentUser.id })
+    });
+    const data = await res.json();
+    if(data.url) {
+      window.open(data.url, '_blank');
+    } else {
+      alert('No active subscription found. Subscribe to a plan first to manage billing.');
+    }
+  } catch(e) {
+    alert('Could not load billing portal. Please email hello@groundworkaustralia.com.au');
+  } finally {
+    if(btn) { btn.textContent = 'Manage billing'; btn.disabled = false; }
+  }
 }
 
 function applyPlan(plan) {
   const tierBadge = document.getElementById('tier-badge');
   const userPlanDisplay = document.getElementById('user-plan-display');
   const upgradeChip = document.querySelector('.upgrade-chip');
+  const planLabels = { free: 'Free plan', essential: 'Essential — $89/month', professional: 'Professional — $179/month' };
+  const statusLabels = { free: 'Free tier', essential: 'Active', professional: 'Active' };
+  const emailEl = document.getElementById('account-email');
+  const planEl = document.getElementById('account-plan');
+  const statusEl = document.getElementById('account-status');
+  if(emailEl && currentUser) emailEl.textContent = currentUser.email || 'Demo account';
+  if(planEl) planEl.textContent = planLabels[plan] || 'Free plan';
+  if(statusEl) statusEl.textContent = statusLabels[plan] || 'Inactive';
 
   if(plan === 'professional') {
     tierBadge.textContent = 'Professional';
@@ -1217,9 +1322,9 @@ function showPanel(id,navEl) {
   if(panel) panel.classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   if(navEl&&!navEl.classList.contains('locked')) navEl.classList.add('active');
-  const titles={dashboard:'Dashboard',termination:'Termination risk calculator',onboarding:'Onboarding checklist builder',performance:'Performance management guide','contract-check':'Contract clause checker',policy:'Policy generator','contract-build':'Contract builder',ir:'IR case prep',upgrade:'Plans & pricing'};
+  const titles={dashboard:'Dashboard',termination:'Termination risk calculator',onboarding:'Onboarding checklist builder',performance:'Performance management guide','contract-check':'Contract clause checker',policy:'Employee handbook generator','contract-build':'Employment contract builder',ir:'IR case prep assistant',upgrade:'Plans & pricing',account:'My account'};
   document.getElementById('topbar-title').textContent=titles[id]||id;
-  if(id!=='dashboard') { toolsUsed++; document.getElementById('stat-tools').textContent=toolsUsed; }
+  if(id!=='dashboard' && id!=='upgrade' && id!=='account') { toolsUsed++; document.getElementById('stat-tools').textContent=toolsUsed; persistStat('tools_used'); }
   if(window.innerWidth<768) toggleMobileMenu();
 }
 
